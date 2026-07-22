@@ -1,0 +1,45 @@
+.monitoring {
+  padding: 80px 8%;
+  background: #f8fafc;
+}
+
+.monitoring h2 {
+  text-align: center;
+  margin-bottom: 3rem;
+  font-size: 2.2rem;
+  color: #14532d;
+}
+
+.monitor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+
+  gap: 25px;
+}
+
+.monitor-card {
+  background: white;
+  padding: 2rem;
+
+  text-align: center;
+
+  border-radius: 16px;
+
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+
+  transition: 0.3s;
+}
+
+.monitor-card:hover {
+  transform: scale(1.03);
+}
+
+.monitor-card h3 {
+  font-size: 2rem;
+  color: #22c55e;
+}
+
+.monitor-card p {
+  color: #64748b;
+  margin-top: 0.8rem;
+}
