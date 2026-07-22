@@ -111,7 +111,7 @@ src/
 ### Clone Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Prasad-132006/WPL---Mini-Project---ai-irrigation-advisory.git
 ```
 
 ### Install Dependencies
