@@ -6,7 +6,7 @@ import {
 
 const CTA = () => {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-r from-[#00A859] via-[#009B6A] to-[#00A2E8] py-24">
+    <section>
 
       {/* Background Blur */}
       <div className="absolute -top-24 -left-24 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>

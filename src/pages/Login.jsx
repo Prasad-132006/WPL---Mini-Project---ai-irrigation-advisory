@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Mail, Lock } from "lucide-react";
+import farmImage from "../assets/farming.png";
 
 import AuthLayout from "../components/AuthLayout";
 import AuthInput from "../components/AuthInput";
@@ -24,7 +25,7 @@ const Login = () => {
     <AuthLayout
       title="Welcome Back 👋"
       subtitle="Sign in to continue to AgroAI"
-    //   image={farmImage}
+      image={farmImage}
     >
       <form
         onSubmit={handleSubmit(onSubmit)}

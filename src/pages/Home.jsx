@@ -67,7 +67,7 @@ const Home = () => {
         </section>
 
         {/* AI Recommendation */}
-        <section
+        {/* <section
           id="recommendation"
           className="py-24 bg-linear-to-r from-green-700 to-green-600"
         >
@@ -77,14 +77,14 @@ const Home = () => {
         </section>
 
         {/* Testimonials */}
-        <section
+        {/* <section
           id="testimonials"
           className="bg-white py-24"
         >
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <Testimonials />
           </div>
-        </section>
+        </section>  */}
 
         {/* CTA */}
         <section
