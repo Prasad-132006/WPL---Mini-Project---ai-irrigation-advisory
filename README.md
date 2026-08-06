@@ -114,6 +114,12 @@ src/
 git clone https://github.com/Prasad-132006/WPL---Mini-Project---ai-irrigation-advisory.git
 ```
 
+### Move to that directory
+
+```bash
+cd WPL---Mini-Project---ai-irrigation-advisory
+```
+
 ### Install Dependencies
 
 ```bash
