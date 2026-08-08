@@ -23,7 +23,7 @@ const CTA = () => {
             </span>
 
             {/* Main Heading */}
-            <h2 className="mt-4 sm:mt-5 text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-bold leading-tight break-words">
+            <h2 className="mt-4 sm:mt-5 text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-bold leading-tight wrap-break-word">
 
               Transform Your Farm
               <br className="hidden sm:block" />
