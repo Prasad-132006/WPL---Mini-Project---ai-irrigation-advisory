@@ -29,12 +29,12 @@ const Home = () => {
         </section>
 
         {/* Statistics */}
-        <section
+        {/* <section
           id="stats"
           className="max-w-7xl mx-auto px-6 lg:px-8 py-20"
         >
           <Stats />
-        </section>
+        </section> */}
 
         {/* AI Features */}
         <section

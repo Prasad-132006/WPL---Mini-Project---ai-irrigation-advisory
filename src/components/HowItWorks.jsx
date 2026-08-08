@@ -104,7 +104,7 @@ const HowItWorks = () => {
                   <div className="hidden lg:flex absolute -right-7 top-1/2 -translate-y-1/2 text-green-500">
                     <ArrowDown
                       size={28}
-                      className="rotate-[-90deg]"
+                      className="-rotate-90"
                     />
                   </div>
                 )}
@@ -116,7 +116,7 @@ const HowItWorks = () => {
 
         {/* Bottom Info */}
 
-        <div className="mt-20 bg-gradient-to-r from-green-600 to-emerald-500 rounded-3xl text-white p-10 lg:flex items-center justify-between">
+        <div className="mt-20 bg-linear-to-r from-green-600 to-emerald-500 rounded-3xl text-white p-10 lg:flex items-center justify-between">
 
           <div>
 
