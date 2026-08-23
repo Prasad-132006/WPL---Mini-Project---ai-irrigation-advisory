@@ -14,9 +14,6 @@ const Home = () => {
   return (
     <div className="bg-slate-50 text-slate-900 overflow-x-hidden">
 
-      {/* Announcement Bar */}
-      <Announcement />
-
       {/* Navigation */}
       <Navbar />
 
@@ -60,14 +57,14 @@ const Home = () => {
         </section>
 
         {/* AI Recommendation */}
-        <section
+        {/* <section
           id="recommendation"
           className="py-24 bg-linear-to-r from-green-700 to-green-600"
         >
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <Recommendation />
           </div>
-        </section>
+        </section> */}
 
         {/* /* Testimonials */}
         <section
