@@ -1,13 +1,16 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { User, Mail, Lock } from "lucide-react";
 import farmImage from "../assets/farming.png";
 
 import AuthLayout from "../components/AuthLayout";
 import AuthInput from "../components/AuthInput";
+import { registerUser } from "../auth";
 
 
 const Register = () => {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -18,10 +21,11 @@ const Register = () => {
   const password = watch("password");
 
   const onSubmit = (data) => {
-    console.log("Register Data:", data);
-
-    // TODO:
-    // axios.post("/api/register", data)
+    registerUser(data);
+    navigate("/login", {
+      replace: true,
+      state: { message: "Account created. Please log in to continue." },
+    });
   };
 
   return (
