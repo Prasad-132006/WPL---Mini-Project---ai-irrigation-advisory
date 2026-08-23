@@ -6,8 +6,14 @@ import {
   BrainCircuit,
   TrendingUp,
 } from "lucide-react";
+import { Link } from "react-router-dom";
+import { getLoggedInUser, getRegisteredUser } from "../auth";
 
 const Hero = () => {
+  const isRegistered = Boolean(getRegisteredUser());
+  const isLoggedIn = Boolean(getLoggedInUser());
+  const getStartedPath = isLoggedIn ? "/dashboard" : isRegistered ? "/login" : "/register";
+
   return (
     <section className="relative min-h-175 overflow-hidden">
       {/* Background Image */}
@@ -43,10 +49,19 @@ const Hero = () => {
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row gap-4">
-            <button className="bg-[#00A859] hover:bg-green-700 transition px-8 py-4 rounded-full font-semibold flex items-center justify-center gap-2 shadow-lg">
-              Get Started
+            <Link
+              to={getStartedPath}
+              className="bg-[#00A859] hover:bg-green-700 transition px-8 py-4 rounded-full font-semibold flex items-center justify-center gap-2 shadow-lg"
+            >
+              {isLoggedIn ? "Open Dashboard" : isRegistered ? "Log In to Continue" : "Create Account"}
               <ArrowRight size={18} />
-            </button>
+            </Link>
+
+            {!isLoggedIn && isRegistered && (
+              <p className="flex items-center justify-center px-2 text-sm text-green-100 sm:justify-start">
+                Already registered? Your dashboard is waiting.
+              </p>
+            )}
 
             <button className="border border-white text-white hover:bg-white hover:text-black transition px-8 py-4 rounded-full flex items-center justify-center gap-2">
               <PlayCircle size={20} />

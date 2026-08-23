@@ -1,8 +1,14 @@
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import { getLoggedInUser } from "./auth";
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
+
+const ProtectedRoute = ({ children }) => {
+  return getLoggedInUser() ? children : <Navigate to="/login" replace />;
+};
 
 const App = () => {
   return (
@@ -13,6 +19,8 @@ const App = () => {
         <Route path="/login" element={<Login />} />
 
         <Route path="/register" element={<Register />} />
+
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );

@@ -1,24 +1,40 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Mail, Lock } from "lucide-react";
 import farmImage from "../assets/farming.png";
 
 import AuthLayout from "../components/AuthLayout";
 import AuthInput from "../components/AuthInput";
+import { getLoggedInUser, loginUser } from "../auth";
 
 
 const Login = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [loginError, setLoginError] = useState("");
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log("Login Data:", data);
+  useEffect(() => {
+    if (getLoggedInUser()) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [navigate]);
 
-    // TODO:
-    // axios.post("/api/login", data)
+  const onSubmit = (data) => {
+    setLoginError("");
+
+    if (!loginUser(data.email, data.password)) {
+      setLoginError("No matching account found. Please register first or check your details.");
+      return;
+    }
+
+    navigate("/dashboard", { replace: true });
   };
 
   return (
@@ -31,6 +47,18 @@ const Login = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-2"
       >
+        {location.state?.message && (
+          <p className="mb-4 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700">
+            {location.state.message}
+          </p>
+        )}
+
+        {loginError && (
+          <p className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
+            {loginError}
+          </p>
+        )}
+
         {/* Email */}
 
         <AuthInput

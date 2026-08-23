@@ -22,39 +22,46 @@ This project provides a digital platform that assists farmers with irrigation pl
 
 ---
 
-## Features
+## Current Features
 
 ### Home Page
 
-* Modern responsive landing page
-* Project overview
-* Live monitoring preview
-* Recent alerts section
+* Responsive public home page
+* State-aware Get Started action for new, registered, and logged-in users
+* Registration and login flow using browser local storage
+* Protected dashboard route available at `/dashboard`
 
-### Smart Monitoring
+### Farmer Dashboard
 
-* Soil moisture tracking
-* Temperature monitoring
-* Humidity monitoring
-* Rainfall probability display
+* Plot name, area, crop, crop stage, soil type, and soil moisture inputs
+* IoT sensor connection toggle with live/manual mode
+* Rainfall probability, temperature, and sensor status display
+* AI analysis loading state
+* Dataset-backed irrigation timing, duration, water quantity, and method
+* Historical yield reference and disease-risk alert
+* Advisory acceptance control
 
-### AI Advisory
+### Authentication
 
-* Irrigation recommendations
-* Water stress alerts
-* Weather-based suggestions
+1. A new user registers an account.
+2. The account is stored locally in the browser.
+3. Login is allowed only with the registered email and password.
+4. Successful login opens the protected dashboard.
+5. Logout clears the active session.
 
-### Farm Analytics
+### Dataset
 
-* Farm statistics
-* Sensor information
-* Performance insights
+`FINAL_SUGARCANE_DATASET.csv` contains 3,000 historical sugarcane records. The dashboard loads it as a separate static asset and uses matching soil type and crop stage to provide reference-based recommendations using fields including:
 
-### Alert System
+* Soil moisture
+* Rainfall and humidity
+* Irrigation water quantity per acre
+* Irrigation method
+* Growth stage
+* Yield per acre
+* Disease type and severity
 
-* Low soil moisture alerts
-* Rain forecast alerts
-* Maintenance notifications
+The current implementation is a frontend prototype. The dataset supports rule-based historical comparison; it is not yet a trained machine-learning model or a real-time IoT/weather integration.
 
 ---
 
@@ -62,14 +69,17 @@ This project provides a digital platform that assists farmers with irrigation pl
 
 ### Frontend
 
-* React.js
-* CSS3
-* React Icons
+* React 19
+* Vite
+* React Router
+* Tailwind CSS
+* React Hook Form
+* Lucide React
 
 ### Data Handling
 
-* JSON Mock Data
-* Local Storage
+* CSV static asset loaded at runtime
+* Browser local storage for prototype authentication
 
 ### Future Integration
 
@@ -85,23 +95,20 @@ This project provides a digital platform that assists farmers with irrigation pl
 
 ```text
 src/
-│
+├── auth.js                         # Prototype registration and session helpers
+├── App.jsx                         # Routes and protected dashboard boundary
 ├── components/
-│   ├── Navbar
-│   ├── Hero
-│   ├── Stats
-│   ├── Monitoring
-│   ├── Features
-│   ├── Alerts
-│   └── Footer
-│
-├── pages/
-│   └── Home
-│
+│   ├── DashboardWorkspace.jsx      # Interactive farmer workflow
+│   ├── DashboardPreview.jsx        # Dashboard visualization component
+│   ├── Hero.jsx                    # State-aware Get Started action
+│   └── ...
 ├── data/
-│   └── mockData.json
-│
-└── App.jsx
+│   └── sugarcaneDataset.js         # CSV loader and historical record matching
+└── pages/
+	├── Dashboard.jsx
+	├── Home.jsx
+	├── Login.jsx
+	└── Register.jsx
 ```
 
 ---
@@ -138,15 +145,28 @@ The application will start on:
 http://localhost:5173
 ```
 
+### Production Build
+
+```bash
+npm run build
+```
+
+### Lint
+
+```bash
+npm run lint
+```
+
 ---
 
 ## Future Enhancements
 
 * Real-time IoT sensor integration
 * Weather API integration
-* Machine learning-based irrigation prediction
+* Trained machine learning-based irrigation prediction
 * Crop water requirement forecasting
 * Yield prediction
+* Secure backend authentication and database storage
 * Multilingual farmer chatbot
 * GIS-based farm visualization
 * Mobile application support

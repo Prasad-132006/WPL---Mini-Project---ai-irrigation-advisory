@@ -4,7 +4,6 @@ import Hero from "../components/Hero";
 import Stats from "../components/Stats";
 import Features from "../components/Features";
 import HowItWorks from "../components/HowItWorks";
-import DashboardPreview from "../components/DashboardPreview";
 import Recommendation from "../components/Recommendation";
 import Testimonials from "../components/Testimonials";
 import CTA from "../components/CTA";
@@ -53,16 +52,6 @@ const Home = () => {
         >
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <HowItWorks />
-          </div>
-        </section>
-
-        {/* Dashboard Preview */}
-        <section
-          id="dashboard"
-          className="bg-white py-24"
-        >
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <DashboardPreview />
           </div>
         </section>
 
