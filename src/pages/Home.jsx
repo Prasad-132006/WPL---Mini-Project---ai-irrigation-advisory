@@ -1,7 +1,6 @@
 import Announcement from "../components/Announcement";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
-import Stats from "../components/Stats";
 import Features from "../components/Features";
 import HowItWorks from "../components/HowItWorks";
 import Recommendation from "../components/Recommendation";
@@ -27,13 +26,7 @@ const Home = () => {
           <Hero />
         </section>
 
-        {/* Statistics */}
-        {/* <section
-          id="stats"
-          className="max-w-7xl mx-auto px-6 lg:px-8 py-20"
-        >
-          <Stats />
-        </section> */}
+        
 
         {/* AI Features */}
         <section
@@ -56,7 +49,7 @@ const Home = () => {
         </section>
 
         {/* AI Recommendation */}
-        {/* <section
+        <section
           id="recommendation"
           className="py-24 bg-linear-to-r from-green-700 to-green-600"
         >
@@ -65,15 +58,15 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Testimonials */}
-        {/* <section
+        {/* /* Testimonials */}
+        <section
           id="testimonials"
           className="bg-white py-24"
         >
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <Testimonials />
           </div>
-        </section>  */}
+        </section> 
 
         {/* CTA */}
         <section
