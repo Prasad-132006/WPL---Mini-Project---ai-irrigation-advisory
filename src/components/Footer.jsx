@@ -327,16 +327,6 @@ const Footer = () => {
                   AI Advisor
                 </button>
               </li>
-
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNavClick("contact-section")}
-                  className="hover:text-green-400 cursor-pointer transition text-left"
-                >
-                  Contact & Support
-                </button>
-              </li>
             </ul>
           </div>
 
