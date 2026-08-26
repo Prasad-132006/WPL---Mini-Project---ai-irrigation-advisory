@@ -48,7 +48,17 @@ const DashboardWorkspace = () => {
   const irrigationTime = rainChance >= 70 ? "Tomorrow morning" : "Tonight after 7:00 PM";
 
   const updateFarm = (event) => {
-    setFarm({ ...farm, [event.target.name]: event.target.value });
+    let value = event.target.value;
+    
+    // Clamp soilMoisture to 0-100 range
+    if (event.target.name === "soilMoisture") {
+      const numValue = Number(value);
+      if (!isNaN(numValue)) {
+        value = Math.max(0, Math.min(100, numValue)).toString();
+      }
+    }
+    
+    setFarm({ ...farm, [event.target.name]: value });
     setAnalysisComplete(false);
     setAdvisoryAccepted(false);
     setAnalysisRecord(null);
