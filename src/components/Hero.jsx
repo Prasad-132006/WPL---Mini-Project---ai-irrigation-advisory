@@ -63,10 +63,10 @@ const Hero = () => {
               </p>
             )}
 
-            <button className="border border-white text-white hover:bg-white hover:text-black transition px-8 py-4 rounded-full flex items-center justify-center gap-2">
+            {/* <button className="border border-white text-white hover:bg-white hover:text-black transition px-8 py-4 rounded-full flex items-center justify-center gap-2">
               <PlayCircle size={20} />
               Watch Demo
-            </button>
+            </button> */}
           </div>
 
           {/* Stats */}
@@ -90,80 +90,81 @@ const Hero = () => {
         </div>
 
         {/* RIGHT */}
-
-        <div className="hidden lg:flex relative w-130 h-130">
-          {/* Main Dashboard */}
-
-          <div className="absolute right-0 top-16 bg-white rounded-3xl shadow-2xl p-6 w-90">
-            <div className="flex justify-between items-center mb-6">
+        <div className="hidden lg:flex flex-col gap-4 w-full max-w-lg">
+          {/* Main Dashboard Recommendation */}
+          <div className="bg-white rounded-3xl shadow-2xl p-6 text-slate-900 border border-slate-100">
+            <div className="flex justify-between items-start mb-6">
               <div>
-                <p className="text-sm text-gray-500">Today's Recommendation</p>
-
-                <h3 className="text-xl font-bold mt-1">Irrigate Tomorrow</h3>
+                <span className="text-xs font-semibold uppercase tracking-wider text-green-700 bg-green-50 px-2.5 py-1 rounded-full inline-block mb-1.5">
+                  AI Advisory
+                </span>
+                <p className="text-xs text-gray-500">Today's Recommendation</p>
+                <h3 className="text-xl font-bold text-gray-900 mt-0.5">Irrigate Tomorrow</h3>
               </div>
-
-              <BrainCircuit className="text-green-600" size={34} />
+              <div className="p-3 bg-green-50 rounded-2xl">
+                <BrainCircuit className="text-green-600" size={30} />
+              </div>
             </div>
 
-            <div className="space-y-5">
-              <div className="flex justify-between">
-                <span>Soil Moisture</span>
-
-                <span className="font-bold text-green-600">24%</span>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-600">Soil Moisture</span>
+                <span className="font-bold text-green-600">24% (Low)</span>
               </div>
 
-              <div className="flex justify-between">
-                <span>Rain Chance</span>
-
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-600">Rain Chance</span>
                 <span className="font-bold text-blue-600">78%</span>
               </div>
 
-              <div className="flex justify-between">
-                <span>Pump Duration</span>
-
-                <span className="font-bold">2 Hours</span>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-600">Pump Duration</span>
+                <span className="font-bold text-gray-900">2 Hours</span>
               </div>
 
-              <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+              <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
                 <div className="w-3/4 h-full bg-green-500 rounded-full"></div>
               </div>
             </div>
           </div>
 
-          {/* Weather Card */}
-
-          <div className="absolute left-0 top-0 bg-white rounded-2xl shadow-xl p-5 w-52">
-            <CloudRain className="text-blue-500 mb-3" size={34} />
-
-            <h4 className="font-semibold">Weather Forecast</h4>
-
-            <p className="text-gray-500 mt-2">Rain Tomorrow</p>
-
-            <p className="text-4xl font-bold mt-3">78%</p>
-          </div>
-
-          {/* Soil Card */}
-
-          <div className="absolute left-12 bottom-12 bg-white rounded-2xl shadow-xl p-5 w-56">
-            <Droplets className="text-cyan-500 mb-3" size={34} />
-
-            <h4 className="font-semibold">Soil Moisture</h4>
-
-            <p className="text-4xl font-bold mt-3">24%</p>
-
-            <div className="mt-4 h-2 bg-gray-200 rounded-full">
-              <div className="w-1/4 h-full bg-cyan-500 rounded-full"></div>
+          {/* Metric Cards Grid */}
+          <div className="grid grid-cols-3 gap-4">
+            {/* Weather Card */}
+            <div className="bg-white rounded-2xl shadow-xl p-4 text-slate-900 border border-slate-100 flex flex-col justify-between">
+              <div className="flex items-center justify-between">
+                <CloudRain className="text-blue-500" size={24} />
+                <span className="text-[10px] font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">Weather</span>
+              </div>
+              <div className="mt-3">
+                <p className="text-xs text-gray-500">Rain Chance</p>
+                <p className="text-2xl font-bold text-gray-900 mt-0.5">78%</p>
+              </div>
             </div>
-          </div>
 
-          {/* Floating AI Card */}
+            {/* Soil Card */}
+            <div className="bg-white rounded-2xl shadow-xl p-4 text-slate-900 border border-slate-100 flex flex-col justify-between">
+              <div className="flex items-center justify-between">
+                <Droplets className="text-cyan-500" size={24} />
+                <span className="text-[10px] font-medium text-cyan-600 bg-cyan-50 px-2 py-0.5 rounded-full">Soil</span>
+              </div>
+              <div className="mt-3">
+                <p className="text-xs text-gray-500">Moisture</p>
+                <p className="text-2xl font-bold text-cyan-600 mt-0.5">24%</p>
+              </div>
+            </div>
 
-          <div className="absolute right-10 bottom-0 bg-green-600 text-white rounded-2xl shadow-xl px-6 py-5">
-            <TrendingUp className="mb-2" size={28} />
-
-            <h4 className="font-semibold">AI Confidence</h4>
-
-            <p className="text-3xl font-bold">96%</p>
+            {/* AI Card */}
+            <div className="bg-green-600 text-white rounded-2xl shadow-xl p-4 flex flex-col justify-between">
+              <div className="flex items-center justify-between">
+                <TrendingUp className="text-green-100" size={24} />
+                <span className="text-[10px] font-medium text-green-800 bg-green-100 px-2 py-0.5 rounded-full">Accuracy</span>
+              </div>
+              <div className="mt-3">
+                <p className="text-xs text-green-100">AI Confidence</p>
+                <p className="text-2xl font-bold text-white mt-0.5">96%</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

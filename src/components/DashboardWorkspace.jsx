@@ -15,13 +15,13 @@ import {
 import { findClosestFarmRecord, loadSugarcaneDataset } from "../data/sugarcaneDataset";
 
 const initialFarm = {
-  farmName: "North Sugarcane Plot",
-  area: "2.5",
+  farmName: "",
+  area: "",
   crop: "Sugarcane",
   cropStage: "Grand growth",
   soilType: "Loamy",
   electricity: "Available",
-  soilMoisture: "24",
+  soilMoisture: "",
 };
 
 const DashboardWorkspace = () => {
@@ -37,12 +37,13 @@ const DashboardWorkspace = () => {
     loadSugarcaneDataset().then(setSugarcaneDataset);
   }, []);
 
-  const moisture = Number(farm.soilMoisture) || 0;
+  const moisture = farm.soilMoisture !== "" ? Number(farm.soilMoisture) : 24;
+  const areaValue = farm.area !== "" ? Number(farm.area) : 1;
   const rainChance = analysisRecord
     ? Math.min(95, Math.round(Number(analysisRecord["Humidity_%"]) + Number(analysisRecord.Rainfall_Total_mm) / 20))
     : sensorConnected ? 78 : 64;
   const waterPerAcre = Number(analysisRecord?.Water_Quantity_liters_per_acre) || (moisture < 30 ? 1680 : 900);
-  const waterRequired = Math.max(0, Math.round(Number(farm.area || 0) * waterPerAcre));
+  const waterRequired = Math.max(0, Math.round(areaValue * waterPerAcre));
   const duration = Math.max(1, Math.round(waterRequired / 2100 * 10) / 10);
   const irrigationTime = rainChance >= 70 ? "Tomorrow morning" : "Tonight after 7:00 PM";
 
@@ -57,7 +58,7 @@ const DashboardWorkspace = () => {
     setIsAnalyzing(true);
     setAnalysisComplete(false);
     setAdvisoryAccepted(false);
-    setAnalysisRecord(findClosestFarmRecord(sugarcaneDataset, farm.soilType, farm.cropStage));
+    setAnalysisRecord(findClosestFarmRecord(sugarcaneDataset, farm.soilType || "Loamy", farm.cropStage || "Grand growth"));
     window.setTimeout(() => {
       setIsAnalyzing(false);
       setAnalysisComplete(true);
@@ -82,12 +83,84 @@ const DashboardWorkspace = () => {
             <Sprout className="text-green-600" size={28} />
           </div>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <label className="text-sm font-medium text-slate-700">Plot name<input name="farmName" value={farm.farmName} onChange={updateFarm} className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2.5 outline-none focus:border-green-600" /></label>
-            <label className="text-sm font-medium text-slate-700">Crop<select name="crop" value={farm.crop} onChange={updateFarm} className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 outline-none focus:border-green-600"><option>Sugarcane</option><option>Wheat</option><option>Rice</option><option>Cotton</option></select></label>
-            <label className="text-sm font-medium text-slate-700">Area (acres)<input name="area" type="number" min="0.1" step="0.1" value={farm.area} onChange={updateFarm} className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2.5 outline-none focus:border-green-600" /></label>
-            <label className="text-sm font-medium text-slate-700">Crop stage<select name="cropStage" value={farm.cropStage} onChange={updateFarm} className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 outline-none focus:border-green-600"><option>Germination</option><option>Vegetative</option><option>Grand growth</option><option>Maturity</option></select></label>
-            <label className="text-sm font-medium text-slate-700">Soil type<select name="soilType" value={farm.soilType} onChange={updateFarm} className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 outline-none focus:border-green-600"><option>Loamy</option><option>Clay</option><option>Sandy</option><option>Black soil</option></select></label>
-            <label className="text-sm font-medium text-slate-700">Current moisture (%)<input name="soilMoisture" type="number" min="0" max="100" value={farm.soilMoisture} onChange={updateFarm} className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2.5 outline-none focus:border-green-600" /></label>
+            <label className="text-sm font-medium text-slate-700">
+              Plot name
+              <input
+                name="farmName"
+                value={farm.farmName}
+                placeholder="e.g. North Plot"
+                onChange={updateFarm}
+                className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2.5 outline-none focus:border-green-600"
+              />
+            </label>
+            <label className="text-sm font-medium text-slate-700">
+              Crop
+              <select
+                name="crop"
+                value={farm.crop}
+                onChange={updateFarm}
+                className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 outline-none focus:border-green-600"
+              >
+                <option>Sugarcane</option>
+                <option>Wheat</option>
+                <option>Rice</option>
+                <option>Cotton</option>
+              </select>
+            </label>
+            <label className="text-sm font-medium text-slate-700">
+              Area (acres)
+              <input
+                name="area"
+                type="number"
+                min="0.1"
+                step="0.1"
+                value={farm.area}
+                placeholder="e.g. 2.5"
+                onChange={updateFarm}
+                className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2.5 outline-none focus:border-green-600"
+              />
+            </label>
+            <label className="text-sm font-medium text-slate-700">
+              Crop stage
+              <select
+                name="cropStage"
+                value={farm.cropStage}
+                onChange={updateFarm}
+                className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 outline-none focus:border-green-600"
+              >
+                <option>Germination</option>
+                <option>Vegetative</option>
+                <option>Grand growth</option>
+                <option>Maturity</option>
+              </select>
+            </label>
+            <label className="text-sm font-medium text-slate-700">
+              Soil type
+              <select
+                name="soilType"
+                value={farm.soilType}
+                onChange={updateFarm}
+                className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 outline-none focus:border-green-600"
+              >
+                <option>Loamy</option>
+                <option>Clay</option>
+                <option>Sandy</option>
+                <option>Black soil</option>
+              </select>
+            </label>
+            <label className="text-sm font-medium text-slate-700">
+              Current moisture (%)
+              <input
+                name="soilMoisture"
+                type="number"
+                min="0"
+                max="100"
+                value={farm.soilMoisture}
+                placeholder="e.g. 24"
+                onChange={updateFarm}
+                className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2.5 outline-none focus:border-green-600"
+              />
+            </label>
           </div>
         </div>
 
@@ -108,8 +181,8 @@ const DashboardWorkspace = () => {
         </div>
 
         <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200 sm:p-8">
-          <div className="flex items-start justify-between gap-4"><div><div className="flex items-center gap-2 text-green-700"><Gauge size={20} /><h3 className="text-xl font-bold">4. Smart recommendation</h3></div><p className="mt-2 text-sm text-slate-500">{analysisComplete ? `Personalized advice for ${farm.farmName}.` : "Run AI analysis to generate plot-specific advice."}</p></div>{analysisComplete && <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">READY</span>}</div>
-          {!analysisComplete ? <div className="mt-8 rounded-xl bg-slate-50 p-6 text-center text-sm text-slate-500">Your irrigation schedule and water requirement will appear here after analysis.</div> : <><div className="mt-6 rounded-xl bg-green-50 p-5"><div className="flex gap-3"><Sprout className="mt-1 shrink-0 text-green-600" size={22} /><div><h4 className="font-bold text-green-900">Irrigate {irrigationTime.toLowerCase()} for {duration} hours</h4><p className="mt-2 text-sm leading-6 text-green-800">Apply approximately <strong>{waterRequired.toLocaleString()} litres</strong> to the {farm.area}-acre {farm.crop.toLowerCase()} plot using the dataset's {analysisRecord?.Irrigation_Method_Type?.toLowerCase() || "recommended"} method.</p></div></div></div><div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"><div className="min-w-0 rounded-lg border border-slate-200 p-3"><span className="text-xs text-slate-500">Moisture</span><strong className="mt-1 block">{moisture}%</strong></div><div className="min-w-0 rounded-lg border border-slate-200 p-3"><span className="text-xs text-slate-500">Water required</span><strong className="mt-1 block">{waterRequired.toLocaleString()} L</strong></div><div className="min-w-0 rounded-lg border border-slate-200 p-3"><span className="text-xs text-slate-500">Dataset yield</span><strong className="mt-1 block">{analysisRecord?.Yield_Quintal_per_Acre ? `${Number(analysisRecord.Yield_Quintal_per_Acre).toFixed(1)} q/ac` : "-"}</strong></div><div className="min-w-0 rounded-lg border border-slate-200 p-3"><span className="text-xs text-slate-500">Confidence</span><strong className="mt-1 block">96%</strong></div></div><div className="mt-5 flex flex-wrap items-center justify-between gap-3"><p className="flex items-center gap-2 text-sm text-amber-700"><AlertTriangle size={17} /> {analysisRecord?.Disease_Severity === "High" ? `High ${analysisRecord.Disease_Type.toLowerCase()} risk in the reference record.` : "Recheck sensor readings before starting the pump."}</p><button type="button" onClick={() => setAdvisoryAccepted(!advisoryAccepted)} className="rounded-lg border border-green-600 px-4 py-2 text-sm font-semibold text-green-700 transition hover:bg-green-50">{advisoryAccepted ? "Advisory accepted" : "Accept advisory"}</button></div></>}
+          <div className="flex items-start justify-between gap-4"><div><div className="flex items-center gap-2 text-green-700"><Gauge size={20} /><h3 className="text-xl font-bold">4. Smart recommendation</h3></div><p className="mt-2 text-sm text-slate-500">{analysisComplete ? `Personalized advice for ${farm.farmName || "your plot"}.` : "Run AI analysis to generate plot-specific advice."}</p></div>{analysisComplete && <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">READY</span>}</div>
+          {!analysisComplete ? <div className="mt-8 rounded-xl bg-slate-50 p-6 text-center text-sm text-slate-500">Your irrigation schedule and water requirement will appear here after analysis.</div> : <><div className="mt-6 rounded-xl bg-green-50 p-5"><div className="flex gap-3"><Sprout className="mt-1 shrink-0 text-green-600" size={22} /><div><h4 className="font-bold text-green-900">Irrigate {irrigationTime.toLowerCase()} for {duration} hours</h4><p className="mt-2 text-sm leading-6 text-green-800">Apply approximately <strong>{waterRequired.toLocaleString()} litres</strong> to the {farm.area || "1"}-acre {farm.crop.toLowerCase()} plot using the dataset's {analysisRecord?.Irrigation_Method_Type?.toLowerCase() || "recommended"} method.</p></div></div></div><div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"><div className="min-w-0 rounded-lg border border-slate-200 p-3"><span className="text-xs text-slate-500">Moisture</span><strong className="mt-1 block">{moisture}%</strong></div><div className="min-w-0 rounded-lg border border-slate-200 p-3"><span className="text-xs text-slate-500">Water required</span><strong className="mt-1 block">{waterRequired.toLocaleString()} L</strong></div><div className="min-w-0 rounded-lg border border-slate-200 p-3"><span className="text-xs text-slate-500">Dataset yield</span><strong className="mt-1 block">{analysisRecord?.Yield_Quintal_per_Acre ? `${Number(analysisRecord.Yield_Quintal_per_Acre).toFixed(1)} q/ac` : "-"}</strong></div><div className="min-w-0 rounded-lg border border-slate-200 p-3"><span className="text-xs text-slate-500">Confidence</span><strong className="mt-1 block">96%</strong></div></div><div className="mt-5 flex flex-wrap items-center justify-between gap-3"><p className="flex items-center gap-2 text-sm text-amber-700"><AlertTriangle size={17} /> {analysisRecord?.Disease_Severity === "High" ? `High ${analysisRecord.Disease_Type.toLowerCase()} risk in the reference record.` : "Recheck sensor readings before starting the pump."}</p><button type="button" onClick={() => setAdvisoryAccepted(!advisoryAccepted)} className="rounded-lg border border-green-600 px-4 py-2 text-sm font-semibold text-green-700 transition hover:bg-green-50">{advisoryAccepted ? "Advisory accepted" : "Accept advisory"}</button></div></>}
         </div>
       </div>
     </section>

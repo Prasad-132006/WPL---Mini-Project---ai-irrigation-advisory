@@ -13,7 +13,7 @@ const AuthLayout = ({
 
         {/* LEFT PANEL */}
 
-        <div className="hidden lg:flex lg:col-span-2 bg-gradient-to-br from-[#002B1D] via-[#008C4A] to-[#00A2E8] text-white">
+        <div className="hidden lg:flex lg:col-span-2 bg-linear-to-br from-[#002B1D] via-[#008C4A] to-[#00A2E8] text-white">
 
           <div className="flex flex-col justify-center w-full px-10 py-10">
 

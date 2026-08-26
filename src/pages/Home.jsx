@@ -5,7 +5,6 @@ import Features from "../components/Features";
 import HowItWorks from "../components/HowItWorks";
 import Recommendation from "../components/Recommendation";
 import Testimonials from "../components/Testimonials";
-import CTA from "../components/CTA";
 import Footer from "../components/Footer";
 import CookieBanner from "../components/CookieBanner";
 
@@ -22,8 +21,6 @@ const Home = () => {
         <section id="hero">
           <Hero />
         </section>
-
-        
 
         {/* AI Features */}
         <section
@@ -45,17 +42,7 @@ const Home = () => {
           </div>
         </section>
 
-        {/* AI Recommendation */}
-        {/* <section
-          id="recommendation"
-          className="py-24 bg-linear-to-r from-green-700 to-green-600"
-        >
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <Recommendation />
-          </div>
-        </section> */}
-
-        {/* /* Testimonials */}
+        {/* Testimonials */}
         <section
           id="testimonials"
           className="bg-white py-24"
@@ -64,16 +51,6 @@ const Home = () => {
             <Testimonials />
           </div>
         </section> 
-
-        {/* CTA */}
-        <section
-          id="cta"
-          className="py-24 bg-linear-to-r from-emerald-600 to-cyan-500"
-        >
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <CTA />
-          </div>
-        </section>
 
       </main>
 

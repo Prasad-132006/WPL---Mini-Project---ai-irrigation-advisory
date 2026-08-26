@@ -116,7 +116,7 @@ const HowItWorks = () => {
 
         {/* Bottom Info */}
 
-        <div className="mt-20 bg-linear-to-r from-green-600 to-emerald-500 rounded-3xl text-white p-10 lg:flex items-center justify-between">
+        {/* <div className="mt-20 bg-linear-to-r from-green-600 to-emerald-500 rounded-3xl text-white p-10 lg:flex items-center justify-between">
 
           <div>
 
@@ -137,7 +137,7 @@ const HowItWorks = () => {
             Explore Dashboard
           </button>
 
-        </div>
+        </div> */}
 
       </div>
     </section>
