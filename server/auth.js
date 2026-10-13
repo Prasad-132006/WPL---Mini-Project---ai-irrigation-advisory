@@ -4,11 +4,14 @@ import { User } from "./models.js";
 
 const COOKIE_NAME = "agroai_session";
 
+export const isSupportAdmin = (user) => config.supportAdminEmails.has(user.email.toLowerCase());
+
 export const publicUser = (user) => ({
   id: user._id.toString(),
   name: user.name,
   email: user.email,
   profile: user.profile,
+  isSupportAdmin: isSupportAdmin(user),
 });
 
 export const setSession = (res, user) => {
@@ -20,6 +23,11 @@ export const setSession = (res, user) => {
     maxAge: 7 * 24 * 60 * 60 * 1000,
     path: "/",
   });
+};
+
+export const requireSupportAdmin = (req, res, next) => {
+  if (!isSupportAdmin(req.user)) return res.status(403).json({ message: "Support administrator access required." });
+  next();
 };
 
 export const clearSession = (res) => res.clearCookie(COOKIE_NAME, {

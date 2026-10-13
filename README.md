@@ -1,6 +1,6 @@
 # AgroAI Sugarcane Smart Irrigation Advisory
 
-AgroAI is a locally runnable React, Express, and MongoDB college mini-project for sugarcane irrigation planning. Farmers can register, sign in, save one or more plots, generate recommendations from the included 3,000-row `FINAL_SUGARCANE_DATASET.csv`, accept an advisory, sign out, and retrieve their data later.
+AgroAI is a locally runnable React, Express, and MongoDB college mini-project for sugarcane irrigation planning. Farmers can register, sign in, manage fields, generate recommendations from the included 3,000-row `FINAL_SUGARCANE_DATASET.csv`, and exchange persistent support tickets with an authorized project administrator.
 
 The advisory engine is intentionally described accurately: it is a rule-based historical-record matcher, not a trained machine-learning model. Soil moisture is entered manually. Rainfall and temperature shown with a recommendation are historical indicators from the matched CSV row, not live sensor or weather data.
 
@@ -34,6 +34,14 @@ Change `JWT_SECRET` in `.env` to a long random value. The default MongoDB connec
 ```text
 mongodb://127.0.0.1:27017/agroai
 ```
+
+To enable the lightweight Admin Support dashboard, add the normalized email address of an existing or planned farmer account to `.env`:
+
+```text
+SUPPORT_ADMIN_EMAILS=owner@example.com
+```
+
+Multiple administrators can be comma-separated. This allowlist is read only by Express; registration contains no role field, and browser input cannot grant admin access. Restart the backend after changing it, then sign in with a registered account whose email exactly matches the list.
 
 ## Start local MongoDB for Compass
 
@@ -78,6 +86,7 @@ Vite proxies `/api` requests to Express. For separate terminals, use `npm run de
    - `farmers`: account, name, normalized email, bcrypt password hash, and profile fields
    - `fields`: separate sugarcane field documents with a `farmer` owner reference
    - `advisories`: captured inputs, calculated recommendation, a `field` reference, and acceptance status
+   - `support_tickets`: farmer messages, optional field reference, admin reply, status, timestamps, and responding administrator
 
 The same owner ObjectId connects a farmer’s records. API queries always include that owner, so another authenticated farmer cannot read or modify them.
 
@@ -91,6 +100,29 @@ The same owner ObjectId connects a farmer’s records. API queries always includ
 6. If moisture is low relative to the cohort, the backend produces a planning depth based on published sugarcane stage/soil guidance, converts millimetres to litres for the entered acreage, and uses the farmer's pump flow to estimate duration. Otherwise it recommends delaying or rechecking and prescribes zero water.
 7. Accepting the advisory persists `accepted: true` and `acceptedAt`.
 8. Log out and back in to reload saved fields and their individual histories.
+
+## Farmer Support Center
+
+Every authenticated farmer has a **Support Center** tab. A request can optionally reference one of that farmer’s fields and contains one validated category, a subject of 3–120 characters, and a message of 10–3,000 characters. Express verifies field ownership before saving it. The success response contains a reference such as `AG-12AB34CD`; the My Support Requests list retrieves real MongoDB records and opens individual tickets through the ownership-scoped API.
+
+Ticket statuses are:
+
+- `Open`: waiting for an administrator response
+- `Replied`: an administrator has saved a reply
+- `Resolved`: an administrator marked the request complete
+
+An allowlisted administrator sees an additional **Admin Support** tab. It lists tickets from all farmers, supports status filtering, shows farmer and related-field details, saves a reply with the responding admin reference, and can resolve or reopen a ticket. Admin authorization is enforced by Express after session authentication, not by hiding a frontend tab.
+
+### Configure and demonstrate an administrator
+
+1. Register the project owner through the normal AgroAI registration page, for example with `owner@example.com`.
+2. Add that same normalized email to the local `.env`: `SUPPORT_ADMIN_EMAILS=owner@example.com`.
+3. Restart `npm run dev`, then sign in or refresh the dashboard with that account.
+4. Use a separate farmer account to submit a request from **Support Center**.
+5. In Chrome DevTools, open **Network**, submit the form, and inspect the real `POST /api/support` JSON response and ticket reference.
+6. Sign in as the configured administrator, open **Admin Support**, reply, and inspect `PATCH /api/admin/support/:id/reply` in Network.
+7. Sign back in as the farmer and open the ticket to read the stored reply.
+8. In MongoDB Compass, open `agroai` → `support_tickets`; confirm the `farmer`, optional `field`, `respondingAdmin`, reply, status, and timestamps match the UI.
 
 ### Existing `farms` collection migration
 
@@ -116,6 +148,12 @@ The attached CSV remains fully available to the matching workflow, but its raw w
 | `PUT` | `/api/fields/:id` | Update an owned field |
 | `GET/POST` | `/api/advisories` | List or generate owned advisories |
 | `PATCH` | `/api/advisories/:id/accept` | Persist acceptance for an owned advisory |
+| `POST` | `/api/support` | Submit an owned farmer support request |
+| `GET` | `/api/support` | List the signed-in farmer’s tickets |
+| `GET` | `/api/support/:id` | Open one owned ticket and its reply |
+| `GET` | `/api/admin/support` | Admin-only ticket list with optional status filter |
+| `PATCH` | `/api/admin/support/:id/reply` | Admin-only persisted reply |
+| `PATCH` | `/api/admin/support/:id/status` | Admin-only resolve or reopen action |
 
 ## Verification
 
@@ -132,7 +170,7 @@ The automated integration test uses the same local MongoDB Community Server but 
 npm test
 ```
 
-The tests verify all 3,000 dataset rows load, low-moisture volume and pump calculations, wet-field zero-water behavior, safe legacy migration, registration, case-insensitive duplicate-email rejection, password hashing, session protection, multiple-field persistence, field editing and detail retrieval, advisory generation and association, acceptance persistence, unsupported-crop rejection, and isolation between two farmers.
+The tests verify all 3,000 dataset rows load, irrigation calculations, safe legacy migration, authentication, multiple-field persistence, advisories, and farmer isolation. Support coverage verifies optional field ownership, validation, MongoDB persistence, logout/login retrieval, cross-farmer denial, non-admin denial, server-derived admin access, replies, responding-admin references, and resolved status persistence.
 
 ## Project structure
 
@@ -142,7 +180,7 @@ server/
   auth.js            HTTP-only JWT cookie authentication
   dataset.js         CSV loading and historical matching
   migrate.js         Verified farms-to-fields migration
-  models.js          MongoDB farmers, fields, and advisories
+  models.js          MongoDB farmers, fields, advisories, and support tickets
   validation.js      API input validation
   app.test.js        Database-backed integration tests
 src/
@@ -159,5 +197,7 @@ FINAL_SUGARCANE_DATASET.csv
 - Cookies are HTTP-only, SameSite=Lax, and secure in production mode.
 - Duplicate email and duplicate per-farmer field names are protected by database indexes.
 - All field and advisory reads and writes are scoped to the authenticated farmer.
+- Farmer ticket reads are ownership-scoped; all-ticket reads, replies, and status changes require a server-side `SUPPORT_ADMIN_EMAILS` match.
+- Support request creation is rate-limited to 10 submissions per IP per hour and all subject/message lengths are validated server-side.
 - API inputs are size-limited and validated; Sugarcane is enforced at both validation and database levels.
 - The server exits with a clear message when MongoDB is unavailable rather than running in a partially connected state.

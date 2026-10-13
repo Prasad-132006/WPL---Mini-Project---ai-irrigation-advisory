@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
-import { AlertTriangle, BrainCircuit, CheckCircle2, CloudRain, Droplets, Gauge, History, LayoutGrid, MapPin, Plus, Save, Sprout, ThermometerSun } from "lucide-react";
+import { AlertTriangle, BrainCircuit, CheckCircle2, CloudRain, Droplets, Gauge, History, LayoutGrid, LifeBuoy, MapPin, Plus, Save, ShieldCheck, Sprout, ThermometerSun } from "lucide-react";
 import { api } from "../api";
+import { useAuth } from "../auth";
+import AdminSupport from "./AdminSupport";
 import MyFields from "./MyFields";
+import SupportCenter from "./SupportCenter";
 
 const initialField = { farmName: "", area: "", crop: "Sugarcane", cropStage: "Grand growth", soilType: "Loamy", electricity: "Available", soilMoisture: "", pumpFlowRateLph: "" };
 const toFieldForm = (field) => ({ ...field, area: String(field.area), crop: "Sugarcane", soilMoisture: String(field.soilMoisture), pumpFlowRateLph: field.pumpFlowRateLph ? String(field.pumpFlowRateLph) : "" });
 const advisoryFieldId = (advisory) => String(typeof advisory.field === "object" ? advisory.field?._id : advisory.field);
 
 const DashboardWorkspace = () => {
+  const { user } = useAuth();
   const [view, setView] = useState("fields");
   const [field, setField] = useState(initialField);
   const [fieldId, setFieldId] = useState(null);
@@ -135,15 +139,21 @@ const DashboardWorkspace = () => {
 
   return (
     <section className="space-y-8">
-      <nav aria-label="Dashboard sections" className="inline-flex rounded-xl bg-white p-1.5 shadow-sm ring-1 ring-slate-200">
+      <nav aria-label="Dashboard sections" className="flex w-full flex-wrap rounded-xl bg-white p-1.5 shadow-sm ring-1 ring-slate-200 sm:w-auto">
         <button type="button" onClick={() => setView("fields")} className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition ${view === "fields" ? "bg-green-600 text-white" : "text-slate-600 hover:bg-slate-50"}`}><LayoutGrid size={17} /> My Fields <span className={`rounded-full px-2 py-0.5 text-xs ${view === "fields" ? "bg-white/20" : "bg-slate-100"}`}>{fields.length}</span></button>
         <button type="button" onClick={() => setView("analysis")} className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition ${view === "analysis" ? "bg-green-600 text-white" : "text-slate-600 hover:bg-slate-50"}`}><Gauge size={17} /> Irrigation analysis</button>
+        <button type="button" onClick={() => setView("support")} className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition ${view === "support" ? "bg-green-600 text-white" : "text-slate-600 hover:bg-slate-50"}`}><LifeBuoy size={17} /> Support Center</button>
+        {user?.isSupportAdmin && <button type="button" onClick={() => setView("admin-support")} className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition ${view === "admin-support" ? "bg-purple-600 text-white" : "text-purple-700 hover:bg-purple-50"}`}><ShieldCheck size={17} /> Admin Support</button>}
       </nav>
 
       {(message || error) && <p className={`rounded-lg px-4 py-3 text-sm ${error ? "bg-red-50 text-red-700" : "bg-green-50 text-green-700"}`}>{error || message}</p>}
 
       {view === "fields" ? (
         <MyFields fields={fields} advisories={advisories} selectedFieldId={detailFieldId} onAdd={startNewField} onOpen={openField} onEdit={editField} onAnalyze={analyzeField} />
+      ) : view === "support" ? (
+        <SupportCenter fields={fields} />
+      ) : view === "admin-support" && user?.isSupportAdmin ? (
+        <AdminSupport />
       ) : (
         <div className="space-y-8">
           <div className="flex flex-wrap items-end justify-between gap-4">

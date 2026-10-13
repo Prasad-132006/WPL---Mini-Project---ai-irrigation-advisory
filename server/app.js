@@ -5,9 +5,9 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import bcrypt from "bcryptjs";
 import { config } from "./config.js";
-import { Advisory, Field, User } from "./models.js";
-import { advisorySchema, fieldSchema, loginSchema, parseBody, registerSchema } from "./validation.js";
-import { clearSession, publicUser, requireAuth, setSession } from "./auth.js";
+import { Advisory, Field, SupportTicket, User } from "./models.js";
+import { advisorySchema, fieldSchema, loginSchema, parseBody, registerSchema, supportReplySchema, supportStatusSchema, supportTicketSchema } from "./validation.js";
+import { clearSession, publicUser, requireAuth, requireSupportAdmin, setSession } from "./auth.js";
 import { createRecommendation, datasetSize } from "./dataset.js";
 
 export const createApp = () => {
@@ -19,6 +19,12 @@ export const createApp = () => {
   app.use(cookieParser());
 
   const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, limit: 50, standardHeaders: true, legacyHeaders: false });
+  const supportLimiter = rateLimit({ windowMs: 60 * 60 * 1000, limit: 10, standardHeaders: true, legacyHeaders: false });
+  const isObjectId = (value) => /^[a-f\d]{24}$/i.test(value);
+  const ticketResponse = (ticket) => {
+    const value = ticket.toObject();
+    return { ...value, reference: `AG-${String(value._id).slice(-8).toUpperCase()}` };
+  };
 
   app.get("/api/health", (_req, res) => res.json({ status: "ok", database: "connected", datasetRecords: datasetSize }));
 
@@ -100,6 +106,73 @@ export const createApp = () => {
     );
     if (!advisory) return res.status(404).json({ message: "Advisory not found." });
     res.json({ advisory });
+  });
+
+  app.post("/api/support", requireAuth, supportLimiter, async (req, res) => {
+    const data = parseBody(supportTicketSchema, req.body);
+    let field = null;
+    if (data.fieldId) {
+      field = await Field.findOne({ _id: data.fieldId, farmer: req.user._id });
+      if (!field) return res.status(404).json({ message: "Related field not found." });
+    }
+    const ticket = await SupportTicket.create({
+      farmer: req.user._id,
+      field: field?._id || null,
+      category: data.category,
+      subject: data.subject,
+      message: data.message,
+    });
+    await ticket.populate("field", "farmName");
+    res.status(201).json({ ticket: ticketResponse(ticket) });
+  });
+
+  app.get("/api/support", requireAuth, async (req, res) => {
+    const tickets = await SupportTicket.find({ farmer: req.user._id }).populate("field", "farmName").sort({ createdAt: -1 });
+    res.json({ tickets: tickets.map(ticketResponse) });
+  });
+
+  app.get("/api/support/:id", requireAuth, async (req, res) => {
+    if (!isObjectId(req.params.id)) return res.status(400).json({ message: "Invalid ticket identifier." });
+    const ticket = await SupportTicket.findOne({ _id: req.params.id, farmer: req.user._id })
+      .populate("field", "farmName")
+      .populate("respondingAdmin", "name");
+    if (!ticket) return res.status(404).json({ message: "Support request not found." });
+    res.json({ ticket: ticketResponse(ticket) });
+  });
+
+  app.get("/api/admin/support", requireAuth, requireSupportAdmin, async (req, res) => {
+    const allowedStatuses = ["Open", "Replied", "Resolved"];
+    if (req.query.status && !allowedStatuses.includes(req.query.status)) return res.status(400).json({ message: "Invalid support status filter." });
+    const filter = req.query.status ? { status: req.query.status } : {};
+    const tickets = await SupportTicket.find(filter)
+      .populate("farmer", "name email")
+      .populate("field", "farmName")
+      .populate("respondingAdmin", "name email")
+      .sort({ updatedAt: -1 });
+    res.json({ tickets: tickets.map(ticketResponse) });
+  });
+
+  app.patch("/api/admin/support/:id/reply", requireAuth, requireSupportAdmin, async (req, res) => {
+    if (!isObjectId(req.params.id)) return res.status(400).json({ message: "Invalid ticket identifier." });
+    const { reply } = parseBody(supportReplySchema, req.body);
+    const ticket = await SupportTicket.findByIdAndUpdate(req.params.id, {
+      adminReply: reply,
+      status: "Replied",
+      repliedAt: new Date(),
+      respondingAdmin: req.user._id,
+    }, { returnDocument: "after", runValidators: true });
+    if (!ticket) return res.status(404).json({ message: "Support request not found." });
+    await ticket.populate([{ path: "farmer", select: "name email" }, { path: "field", select: "farmName" }, { path: "respondingAdmin", select: "name email" }]);
+    res.json({ ticket: ticketResponse(ticket) });
+  });
+
+  app.patch("/api/admin/support/:id/status", requireAuth, requireSupportAdmin, async (req, res) => {
+    if (!isObjectId(req.params.id)) return res.status(400).json({ message: "Invalid ticket identifier." });
+    const { status } = parseBody(supportStatusSchema, req.body);
+    const ticket = await SupportTicket.findByIdAndUpdate(req.params.id, { status }, { returnDocument: "after", runValidators: true });
+    if (!ticket) return res.status(404).json({ message: "Support request not found." });
+    await ticket.populate([{ path: "farmer", select: "name email" }, { path: "field", select: "farmName" }, { path: "respondingAdmin", select: "name email" }]);
+    res.json({ ticket: ticketResponse(ticket) });
   });
 
   app.use((req, res) => res.status(404).json({ message: "API route not found." }));

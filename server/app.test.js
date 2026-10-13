@@ -3,11 +3,13 @@ import assert from "node:assert/strict";
 import mongoose from "mongoose";
 import request from "supertest";
 import { createApp } from "./app.js";
-import { Advisory, Field, User } from "./models.js";
+import { Advisory, Field, SupportTicket, User } from "./models.js";
 import { createRecommendation, datasetSize } from "./dataset.js";
 import { migrateFarmsToFields } from "./migrate.js";
+import { config } from "./config.js";
 
 const mongoUri = process.env.TEST_MONGODB_URI || "mongodb://127.0.0.1:27017/agroai_test";
+config.supportAdminEmails = new Set(["admin@example.com"]);
 const app = createApp();
 
 before(async () => {
@@ -158,4 +160,67 @@ test("complete auth, persistence, acceptance, duplicate-email, and user-isolatio
   assert.equal(await Advisory.countDocuments(), 1);
   const storedUser = await User.findOne({ email: "one@example.com" }).select("+passwordHash");
   assert.notEqual(storedUser.passwordHash, "strongpass1");
+});
+
+test("support tickets persist with field ownership and server-enforced admin replies", async () => {
+  const farmer = request.agent(app);
+  const otherFarmer = request.agent(app);
+  const admin = request.agent(app);
+
+  const farmerRegistration = await farmer.post("/api/auth/register").send({ name: "Support Farmer", email: "support@example.com", password: "strongpass3" });
+  assert.equal(farmerRegistration.status, 201);
+  assert.equal(farmerRegistration.body.user.isSupportAdmin, false);
+  await otherFarmer.post("/api/auth/register").send({ name: "Other Support Farmer", email: "other-support@example.com", password: "strongpass4" });
+  const adminRegistration = await admin.post("/api/auth/register").send({ name: "Support Admin", email: "admin@example.com", password: "strongpass5" });
+  assert.equal(adminRegistration.status, 201);
+  assert.equal(adminRegistration.body.user.isSupportAdmin, true);
+
+  const ownedField = await farmer.post("/api/fields").send({ farmName: "Support Field", area: 1, crop: "Sugarcane", cropStage: "Vegetative", soilType: "Loamy", electricity: "Available", soilMoisture: 21, pumpFlowRateLph: 18000 });
+  const otherField = await otherFarmer.post("/api/fields").send({ farmName: "Other Field", area: 2, crop: "Sugarcane", cropStage: "Maturity", soilType: "Clay", electricity: "Available", soilMoisture: 30, pumpFlowRateLph: 22000 });
+
+  const rejectedForeignField = await farmer.post("/api/support").send({ fieldId: otherField.body.field._id, category: "Field details", subject: "Wrong field", message: "This field belongs to another farmer." });
+  assert.equal(rejectedForeignField.status, 404);
+  assert.equal((await farmer.post("/api/support").send({ category: "Other", subject: "No", message: "short" })).status, 400);
+
+  const created = await farmer.post("/api/support").send({
+    fieldId: ownedField.body.field._id,
+    category: "Pump/Electricity",
+    subject: "Pump stops during irrigation",
+    message: "The pump stops after ten minutes even though electricity is available.",
+  });
+  assert.equal(created.status, 201);
+  assert.match(created.body.ticket.reference, /^AG-[A-F\d]{8}$/);
+  assert.equal(created.body.ticket.field.farmName, "Support Field");
+  const ticketId = created.body.ticket._id;
+
+  assert.equal((await farmer.get("/api/admin/support")).status, 403);
+  assert.equal((await otherFarmer.get(`/api/support/${ticketId}`)).status, 404);
+  assert.deepEqual((await otherFarmer.get("/api/support")).body.tickets, []);
+
+  const adminList = await admin.get("/api/admin/support?status=Open");
+  assert.equal(adminList.status, 200);
+  const listedTicket = adminList.body.tickets.find((ticket) => ticket._id === ticketId);
+  assert.equal(listedTicket.farmer.name, "Support Farmer");
+  assert.equal(listedTicket.field.farmName, "Support Field");
+
+  const reply = await admin.patch(`/api/admin/support/${ticketId}/reply`).send({ reply: "Please inspect the starter and voltage, then update the field pump details." });
+  assert.equal(reply.status, 200);
+  assert.equal(reply.body.ticket.status, "Replied");
+  assert.equal(reply.body.ticket.respondingAdmin.email, "admin@example.com");
+
+  await farmer.post("/api/auth/logout");
+  assert.equal((await farmer.post("/api/auth/login").send({ email: "support@example.com", password: "strongpass3" })).status, 200);
+  const restored = await farmer.get(`/api/support/${ticketId}`);
+  assert.equal(restored.status, 200);
+  assert.match(restored.body.ticket.adminReply, /starter and voltage/i);
+  assert.equal(restored.body.ticket.status, "Replied");
+
+  const resolved = await admin.patch(`/api/admin/support/${ticketId}/status`).send({ status: "Resolved" });
+  assert.equal(resolved.status, 200);
+  assert.equal(resolved.body.ticket.status, "Resolved");
+  const storedTicket = await SupportTicket.findById(ticketId);
+  assert.equal(storedTicket.status, "Resolved");
+  assert.equal(String(storedTicket.field), ownedField.body.field._id);
+  assert.ok(storedTicket.repliedAt);
+  assert.ok(storedTicket.respondingAdmin);
 });

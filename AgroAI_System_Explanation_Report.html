@@ -15,7 +15,7 @@
                          |
                          -&gt; CSV historical matcher</pre>
   <h2>Persistent collections</h2>
-  <ul><li><code>farmers</code>: account identity and bcrypt password hash</li><li><code>fields</code>: separately stored, farmer-owned sugarcane fields and current inputs</li><li><code>advisories</code>: field-linked input snapshots, recommendations, CSV reference, and acceptance</li></ul>
+  <ul><li><code>farmers</code>: account identity and bcrypt password hash</li><li><code>fields</code>: separately stored, farmer-owned sugarcane fields and current inputs</li><li><code>advisories</code>: field-linked input snapshots, recommendations, CSV reference, and acceptance</li><li><code>support_tickets</code>: farmer messages, optional field links, administrator replies, statuses, and response timestamps</li></ul>
   <p>The My Fields dashboard lists owned fields as responsive cards with details, editing, direct irrigation-analysis navigation, and field-specific advisory history. A verified startup migration preserves legacy identifiers and ownership while moving data from <code>farms</code> to <code>fields</code>.</p>
   <h2>Recommendation method</h2>
   <table><tr><th>UI stage</th><th>Dataset stage</th></tr><tr><td>Germination</td><td>Early</td></tr><tr><td>Vegetative</td><td>Early</td></tr><tr><td>Grand growth</td><td>Mid</td></tr><tr><td>Maturity</td><td>Late</td></tr></table>

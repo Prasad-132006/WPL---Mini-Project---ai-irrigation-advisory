@@ -26,6 +26,21 @@ export const advisorySchema = z.object({
   fieldId: z.string().regex(/^[a-f\d]{24}$/i),
 });
 
+export const supportTicketSchema = z.object({
+  fieldId: z.string().regex(/^[a-f\d]{24}$/i).nullable().optional(),
+  category: z.enum(["Irrigation advice", "Pump/Electricity", "Field details", "Technical issue", "Other"]),
+  subject: z.string().trim().min(3).max(120),
+  message: z.string().trim().min(10).max(3000),
+});
+
+export const supportReplySchema = z.object({
+  reply: z.string().trim().min(2).max(3000),
+});
+
+export const supportStatusSchema = z.object({
+  status: z.enum(["Open", "Resolved"]),
+});
+
 export const parseBody = (schema, body) => {
   const result = schema.safeParse(body);
   if (!result.success) {

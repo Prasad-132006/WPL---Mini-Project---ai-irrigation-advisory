@@ -14,7 +14,7 @@ React browser
 Express validation and authenticated owner check
   -> Mongoose
 Local MongoDB (agroai)
-  -> farmers / fields / advisories
+  -> farmers / fields / advisories / support_tickets
 
 Recommendation request
   -> read owned field
@@ -35,8 +35,11 @@ The `passwordHash` field is excluded from normal database queries and never appe
 - `farmers`: name, normalized unique email, password hash, optional profile, timestamps
 - `fields`: farmer owner, field name, area, fixed Sugarcane crop, crop stage, soil type, electricity availability, current moisture, pump flow, timestamps
 - `advisories`: farmer owner, field reference, immutable input snapshot, calculated recommendation, reference CSV row, accepted state, accepted time, timestamps
+- `support_tickets`: farmer owner, optional owned-field reference, category, subject, message, reply, status, responding admin, and timestamps
 
 Every field and advisory operation includes the authenticated farmer ID. Object IDs alone do not grant access. The My Fields interface lists each owned field as a separate card and filters advisory history by its `field` reference.
+
+Support requests use the same authenticated farmer session. Farmers can read only their own tickets. Admin access is derived server-side from `SUPPORT_ADMIN_EMAILS`; registration never accepts a role. Admin replies and status changes are persisted through protected Express endpoints.
 
 Legacy `farms` records are copied to `fields` with identifiers and ownership intact. Advisory references are migrated from `farm` to `field`; the legacy collection is removed only after the copy and relationships are verified.
 

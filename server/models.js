@@ -62,6 +62,22 @@ const advisorySchema = new mongoose.Schema({
   acceptedAt: { type: Date, default: null },
 }, { timestamps: true, collection: "advisories" });
 
+const supportTicketSchema = new mongoose.Schema({
+  farmer: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
+  field: { type: mongoose.Schema.Types.ObjectId, ref: "Field", default: null, index: true },
+  category: { type: String, enum: ["Irrigation advice", "Pump/Electricity", "Field details", "Technical issue", "Other"], required: true },
+  subject: { type: String, required: true, trim: true, minlength: 3, maxlength: 120 },
+  message: { type: String, required: true, trim: true, minlength: 10, maxlength: 3000 },
+  adminReply: { type: String, default: "", maxlength: 3000 },
+  status: { type: String, enum: ["Open", "Replied", "Resolved"], default: "Open", required: true, index: true },
+  repliedAt: { type: Date, default: null },
+  respondingAdmin: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
+}, { timestamps: true, collection: "support_tickets" });
+
+supportTicketSchema.index({ farmer: 1, createdAt: -1 });
+supportTicketSchema.index({ status: 1, updatedAt: -1 });
+
 export const User = mongoose.model("User", userSchema);
 export const Field = mongoose.model("Field", fieldSchema);
 export const Advisory = mongoose.model("Advisory", advisorySchema);
+export const SupportTicket = mongoose.model("SupportTicket", supportTicketSchema);
