@@ -2,18 +2,21 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
-import { getLoggedInUser } from "./auth";
+import { AuthProvider, useAuth } from "./auth";
 
 import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 
 const ProtectedRoute = ({ children }) => {
-  return getLoggedInUser() ? children : <Navigate to="/login" replace />;
+  const { user, loading } = useAuth();
+  if (loading) return <div className="flex min-h-screen items-center justify-center text-slate-600">Loading AgroAI...</div>;
+  return user ? children : <Navigate to="/login" replace />;
 };
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <Routes>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
         <Route path="/" element={<Home />} />
 
         <Route path="/login" element={<Login />} />
@@ -21,8 +24,9 @@ const App = () => {
         <Route path="/register" element={<Register />} />
 
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 };
 

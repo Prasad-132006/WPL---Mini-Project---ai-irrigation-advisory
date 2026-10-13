@@ -1,18 +1,16 @@
 import {
   ArrowRight,
-  PlayCircle,
   CloudRain,
   Droplets,
   BrainCircuit,
   TrendingUp,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { getLoggedInUser, getRegisteredUser } from "../auth";
+import { useAuth } from "../auth";
 
 const Hero = () => {
-  const isRegistered = Boolean(getRegisteredUser());
-  const isLoggedIn = Boolean(getLoggedInUser());
-  const getStartedPath = isLoggedIn ? "/dashboard" : isRegistered ? "/login" : "/register";
+  const { user } = useAuth();
+  const getStartedPath = user ? "/dashboard" : "/register";
 
   return (
     <section className="relative min-h-175 overflow-hidden">
@@ -33,7 +31,7 @@ const Hero = () => {
         {/* LEFT */}
         <div className="max-w-2xl text-center lg:text-left text-white">
           <span className="inline-flex items-center gap-1.5 bg-green-600/20 border border-green-400 text-green-300 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium mb-5 sm:mb-6 whitespace-nowrap">
-            🌱 AI Powered Smart Farming
+            🌱 Data-Guided Sugarcane Farming
           </span>
 
           <h1 className="text-5xl lg:text-6xl font-extrabold leading-tight">
@@ -43,9 +41,8 @@ const Hero = () => {
           </h1>
 
           <p className="mt-8 text-lg text-slate-200 leading-8 max-w-xl">
-            Use Artificial Intelligence, weather forecasting, and soil moisture
-            analytics to optimize irrigation, reduce water wastage, and maximize
-            crop yield.
+            Use historical sugarcane records and current field inputs to plan
+            irrigation, reduce water wastage, and keep an advisory history.
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row gap-4">
@@ -53,15 +50,9 @@ const Hero = () => {
               to={getStartedPath}
               className="bg-[#00A859] hover:bg-green-700 transition px-8 py-4 rounded-full font-semibold flex items-center justify-center gap-2 shadow-lg"
             >
-              {isLoggedIn ? "Open Dashboard" : isRegistered ? "Log In to Continue" : "Create Account"}
+              {user ? "Open Dashboard" : "Create Account"}
               <ArrowRight size={18} />
             </Link>
-
-            {!isLoggedIn && isRegistered && (
-              <p className="flex items-center justify-center px-2 text-sm text-green-100 sm:justify-start">
-                Already registered? Your dashboard is waiting.
-              </p>
-            )}
 
             {/* <button className="border border-white text-white hover:bg-white hover:text-black transition px-8 py-4 rounded-full flex items-center justify-center gap-2">
               <PlayCircle size={20} />
@@ -83,8 +74,8 @@ const Hero = () => {
             </div>
 
             <div>
-              <h2 className="text-3xl font-bold">96%</h2>
-              <p className="text-slate-300">Prediction Accuracy</p>
+              <h2 className="text-3xl font-bold">3,000</h2>
+              <p className="text-slate-300">Dataset Records</p>
             </div>
           </div>
         </div>
@@ -96,7 +87,7 @@ const Hero = () => {
             <div className="flex justify-between items-start mb-6">
               <div>
                 <span className="text-xs font-semibold uppercase tracking-wider text-green-700 bg-green-50 px-2.5 py-1 rounded-full inline-block mb-1.5">
-                  AI Advisory
+                  Irrigation Advisory
                 </span>
                 <p className="text-xs text-gray-500">Today's Recommendation</p>
                 <h3 className="text-xl font-bold text-gray-900 mt-0.5">Irrigate Tomorrow</h3>
@@ -158,11 +149,11 @@ const Hero = () => {
             <div className="bg-green-600 text-white rounded-2xl shadow-xl p-4 flex flex-col justify-between">
               <div className="flex items-center justify-between">
                 <TrendingUp className="text-green-100" size={24} />
-                <span className="text-[10px] font-medium text-green-800 bg-green-100 px-2 py-0.5 rounded-full">Accuracy</span>
+                <span className="text-[10px] font-medium text-green-800 bg-green-100 px-2 py-0.5 rounded-full">Method</span>
               </div>
               <div className="mt-3">
-                <p className="text-xs text-green-100">AI Confidence</p>
-                <p className="text-2xl font-bold text-white mt-0.5">96%</p>
+                <p className="text-xs text-green-100">Analysis</p>
+                <p className="text-lg font-bold text-white mt-0.5">Rule-based</p>
               </div>
             </div>
           </div>

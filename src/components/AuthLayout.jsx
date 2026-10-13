@@ -46,14 +46,14 @@ const AuthLayout = ({
 
               Empowering Farmers
               <br />
-              with Artificial Intelligence
+              with Historical Field Data
 
             </h1>
 
             <p className="mt-5 text-green-50 leading-7">
 
-              AI-powered irrigation recommendations,
-              weather forecasting,
+              dataset-guided irrigation recommendations,
+              historical sugarcane data,
               soil moisture insights,
               and smart farming analytics
               to increase crop productivity.

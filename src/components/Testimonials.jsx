@@ -1,4 +1,3 @@
-import React from 'react';
 import { Star, Quote } from 'lucide-react';
 
 const testimonials = [
@@ -7,7 +6,7 @@ const testimonials = [
     quote:
       "AgroAI transformed how we manage water across our 200-acre farm. The automated schedules saved us nearly 40% in water usage during the last harvest alone.",
     author: "Rajesh Patel",
-    role: "Sugarcane & Wheat Farmer",
+    role: "Sugarcane Farmer",
     location: "Gujarat, India",
     rating: 5,
     avatar:
@@ -16,7 +15,7 @@ const testimonials = [
   {
     id: 2,
     quote:
-      "The accuracy of the rainfall predictions combined with soil sensor data gives me total peace of mind. I no longer over-irrigate before unexpected rains.",
+      "The historical rainfall indicators and manually entered soil moisture help me review irrigation needs before watering.",
     author: "Sarah Jenkins",
     role: "Orchard Owner",
     location: "California, USA",
@@ -27,7 +26,7 @@ const testimonials = [
   {
     id: 3,
     quote:
-      "Setting up field coordinates and receiving daily pump duration alerts took minutes. It’s easily the most intuitive AI tool we’ve used in our cooperative.",
+      "Setting up the plot and reviewing saved pump-duration guidance took minutes. It’s an intuitive irrigation tool for our cooperative.",
     author: "Anil Kumar",
     role: "Agricultural Cooperative Lead",
     location: "Punjab, India",

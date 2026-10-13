@@ -13,7 +13,6 @@ import {
   Shield,
   FileCheck,
   CheckCircle2,
-  ExternalLink,
 } from "lucide-react";
 
 import {
@@ -31,7 +30,7 @@ const RESOURCE_MODALS = {
     content: (
       <div className="space-y-4 text-sm text-slate-700">
         <p>
-          AgroAI is built on an enterprise-grade IoT edge ingestion pipeline combined with cloud-based agricultural AI inference models.
+          AgroAI is a college project using manually entered field readings and a local historical sugarcane dataset.
         </p>
         <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
           <h4 className="font-semibold text-slate-900 mb-2">Supported Sensor Protocols</h4>
@@ -77,7 +76,7 @@ const RESOURCE_MODALS = {
           <div className="flex gap-3 items-start p-3 rounded-xl bg-slate-50 border border-slate-200">
             <span className="w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">3</span>
             <div>
-              <p className="font-semibold text-slate-900">Receive Daily AI Advisories</p>
+              <p className="font-semibold text-slate-900">Receive Irrigation Advisories</p>
               <p className="text-slate-600 text-xs mt-0.5">Review personalized pump run-time and rainfall avoidance alerts.</p>
             </div>
           </div>
@@ -95,14 +94,14 @@ const RESOURCE_MODALS = {
   },
   faq: {
     title: "Frequently Asked Questions",
-    subtitle: "Common answers about smart irrigation & AI",
+    subtitle: "Common answers about smart irrigation",
     icon: HelpCircle,
     content: (
       <div className="space-y-3 text-sm text-slate-700">
         <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
           <p className="font-semibold text-slate-900">How does AgroAI calculate when to irrigate?</p>
           <p className="text-slate-600 text-xs mt-1">
-            Our models analyze real-time soil moisture sensors, hyper-local 7-day weather radars, solar radiation, and crop growth stage water requirements.
+            The backend matches manually entered soil moisture, soil type, and sugarcane growth stage with historical dataset records.
           </p>
         </div>
         <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
@@ -136,7 +135,7 @@ const RESOURCE_MODALS = {
           </div>
           <div className="flex items-center gap-2 text-xs text-slate-700">
             <CheckCircle2 className="text-green-600" size={16} />
-            <span>You can export or delete your sensor history at any time.</span>
+            <span>Farm and advisory records remain separated by farmer account.</span>
           </div>
           <div className="flex items-center gap-2 text-xs text-slate-700">
             <CheckCircle2 className="text-green-600" size={16} />
@@ -156,7 +155,7 @@ const RESOURCE_MODALS = {
           By using the AgroAI platform, you agree to follow standard operating procedures for agricultural telemetry equipment and verify irrigation schedules against local environmental conditions.
         </p>
         <ul className="list-disc list-inside space-y-1.5 text-xs text-slate-600">
-          <li>Recommendations are calculated based on sensor telemetry and meteorological forecast models.</li>
+          <li>Recommendations are rule-based and use farmer inputs plus historical sugarcane records.</li>
           <li>Users retain responsibility for ensuring physical pump valves are maintained and operational.</li>
           <li>Platform uptime target is 99.9% across all supported agricultural regions.</li>
         </ul>
@@ -237,7 +236,7 @@ const Footer = () => {
             </div>
 
             <p className="mt-6 text-gray-300 leading-7">
-              AI-powered irrigation advisory platform helping farmers make intelligent decisions using weather, soil moisture, and predictive analytics.
+              Sugarcane irrigation advisory platform helping farmers make informed decisions using current soil moisture and historical farm records.
             </p>
 
             {/* Social Links */}
@@ -324,7 +323,7 @@ const Footer = () => {
                   onClick={() => handleNavClick("how-it-works")}
                   className="hover:text-green-400 cursor-pointer transition text-left"
                 >
-                  AI Advisor
+                  Irrigation Advisor
                 </button>
               </li>
             </ul>

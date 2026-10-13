@@ -1,31 +1,38 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { User, Mail, Lock } from "lucide-react";
 import farmImage from "../assets/farming.png";
 
 import AuthLayout from "../components/AuthLayout";
 import AuthInput from "../components/AuthInput";
-import { registerUser } from "../auth";
+import { useAuth } from "../auth";
 
 
 const Register = () => {
   const navigate = useNavigate();
+  const { register: createAccount } = useAuth();
+  const [serverError, setServerError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
     handleSubmit,
-    watch,
+    getValues,
     formState: { errors },
   } = useForm();
 
-  const password = watch("password");
-
-  const onSubmit = (data) => {
-    registerUser(data);
-    navigate("/login", {
-      replace: true,
-      state: { message: "Account created. Please log in to continue." },
-    });
+  const onSubmit = async ({ name, email, password }) => {
+    setServerError("");
+    setIsSubmitting(true);
+    try {
+      await createAccount({ name, email, password });
+      navigate("/dashboard", { replace: true });
+    } catch (error) {
+      setServerError(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -38,6 +45,7 @@ const Register = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-2"
       >
+        {serverError && <p className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{serverError}</p>}
         {/* Full Name */}
 
         <AuthInput
@@ -88,8 +96,8 @@ const Register = () => {
           rules={{
             required: "Password is required",
             minLength: {
-              value: 6,
-              message: "Password must be at least 6 characters",
+              value: 8,
+              message: "Password must be at least 8 characters",
             },
           }}
           error={errors.password}
@@ -107,7 +115,7 @@ const Register = () => {
           rules={{
             required: "Please confirm your password",
             validate: (value) =>
-              value === password || "Passwords do not match",
+              value === getValues("password") || "Passwords do not match",
           }}
           error={errors.confirmPassword}
         />
@@ -149,6 +157,7 @@ const Register = () => {
 
         <button
           type="submit"
+          disabled={isSubmitting}
           className="
             w-full
             mt-4
@@ -162,36 +171,7 @@ const Register = () => {
             shadow-lg
           "
         >
-          Create Account
-        </button>
-
-        {/* Divider */}
-
-        <div className="flex items-center gap-4 my-6">
-          <div className="flex-1 h-px bg-slate-300"></div>
-
-          <span className="text-slate-400 text-sm">
-            OR
-          </span>
-
-          <div className="flex-1 h-px bg-slate-300"></div>
-        </div>
-
-        {/* Google */}
-
-        <button
-          type="button"
-          className="
-            w-full
-            border
-            border-slate-300
-            rounded-xl
-            py-3
-            hover:bg-slate-100
-            transition
-          "
-        >
-          Continue with Google
+          {isSubmitting ? "Creating account..." : "Create Account"}
         </button>
 
         {/* Login */}

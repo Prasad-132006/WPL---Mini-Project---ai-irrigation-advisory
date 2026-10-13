@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   CloudRain,
   Droplets,
@@ -25,11 +25,11 @@ const DashboardPreview = () => {
         </span>
 
         <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mt-3 sm:mt-4">
-          AI Irrigation Dashboard
+          Sugarcane Irrigation Dashboard
         </h2>
 
         <p className="mt-4 sm:mt-5 text-base sm:text-lg text-slate-600 leading-7 sm:leading-8">
-          Monitor weather conditions, soil moisture, AI recommendations,
+          Review historical conditions, soil moisture, recommendations,
           and irrigation schedules from a single intelligent dashboard.
         </p>
       </div>
@@ -45,7 +45,7 @@ const DashboardPreview = () => {
             <div className="flex justify-between items-center">
               <Droplets className="text-cyan-500" size={24} />
               <span className="text-xs sm:text-sm text-green-600 font-semibold">
-                LIVE
+                MANUAL
               </span>
             </div>
             <h3 className="mt-4 sm:mt-5 text-sm sm:text-base text-slate-500">
@@ -91,10 +91,10 @@ const DashboardPreview = () => {
           <div className="bg-white rounded-2xl p-5 sm:p-6 shadow-sm">
             <BrainCircuit className="text-green-600" size={24} />
             <h3 className="mt-4 sm:mt-5 text-sm sm:text-base text-slate-500">
-              AI Confidence
+              Dataset Rows
             </h3>
             <h2 className="text-3xl sm:text-4xl font-bold mt-2">
-              96%
+              3,000
             </h2>
             <p className="text-green-600 text-sm sm:text-base mt-3 sm:mt-4">
               Excellent
@@ -112,7 +112,7 @@ const DashboardPreview = () => {
             {/* Header */}
             <div className="flex items-start justify-between gap-4">
               <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
-                Today's AI Recommendation
+                Today's Dataset Recommendation
               </h3>
               <BrainCircuit className="text-green-600 shrink-0" size={30} />
             </div>
@@ -202,11 +202,11 @@ const DashboardPreview = () => {
               {/* AI Accuracy */}
               <div>
                 <div className="flex justify-between mb-2 text-sm sm:text-base">
-                  <span>AI Accuracy</span>
-                  <span>96%</span>
+                  <span>Dataset Coverage</span>
+                  <span>Sugarcane</span>
                 </div>
                 <div className="h-3 rounded-full bg-slate-200 overflow-hidden">
-                  <div className="w-[96%] h-full rounded-full bg-purple-500"></div>
+                  <div className="w-full h-full rounded-full bg-purple-500"></div>
                 </div>
               </div>
 
@@ -251,10 +251,10 @@ const DashboardPreview = () => {
               </div>
               <div>
                 <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
-                  Comprehensive AI Advisory Report
+                  Comprehensive Irrigation Advisory Report
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-                  Generated on: Aug 17, 2026 • Field #4 (Wheat North)
+                  Example report • Sugarcane North Plot
                 </p>
               </div>
             </div>

@@ -12,7 +12,7 @@ import {
   ArrowRight,
   Sparkles,
 } from "lucide-react";
-import { getLoggedInUser, getRegisteredUser } from "../auth";
+import { useAuth } from "../auth";
 
 const features = [
   {
@@ -21,18 +21,18 @@ const features = [
     title: "Smart Irrigation",
     tagline: "Precision Water Control",
     description:
-      "AI predicts the optimal irrigation schedule based on soil moisture, crop stage, and weather conditions.",
+      "Rule-based analysis estimates a sugarcane irrigation schedule from field inputs and historical records.",
     color: "text-cyan-600",
     bgColor: "bg-cyan-50",
     badgeColor: "bg-cyan-100 text-cyan-800",
     accentColor: "border-cyan-500",
     overview:
-      "Smart Irrigation analyzes high-resolution soil sensor feeds and crop growth stages to compute the exact volume of water required, avoiding both under-watering and waterlogged root zones.",
+      "Smart Irrigation uses manually entered moisture and sugarcane growth stages to estimate water needs from comparable historical records.",
     highlights: [
       "Dynamic pump run-time calculations down to the minute",
       "Adapts automatically to soil types (sandy, loamy, clay)",
-      "Multi-zone support for distinct field and crop requirements",
-      "Automated scheduling recommendations delivered each morning",
+      "Multiple saved sugarcane plots per farmer",
+      "Persisted recommendations and acceptance history",
     ],
     metric: "Up to 40% water saved per cycle",
   },
@@ -40,20 +40,20 @@ const features = [
     id: "weather-intelligence",
     icon: CloudRain,
     title: "Weather Intelligence",
-    tagline: "Hyper-Local Forecasting",
+    tagline: "Historical Weather Context",
     description:
-      "Get rainfall forecasts and irrigation recommendations to avoid unnecessary watering.",
+      "Review historical rainfall indicators alongside irrigation recommendations.",
     color: "text-blue-600",
     bgColor: "bg-blue-50",
     badgeColor: "bg-blue-100 text-blue-800",
     accentColor: "border-blue-500",
     overview:
-      "Weather Intelligence blends hyper-local meteorological radar with predictive models to anticipate rainfall, evapotranspiration rates, and temperature shifts before you irrigate.",
+      "Historical context exposes rainfall, humidity, evapotranspiration, and temperature values from the matched sugarcane dataset row.",
     highlights: [
-      "7-day hyper-local precipitation and temperature projections",
-      "Real-time rain probability radar integration",
-      "Smart 'Skip Irrigation' alerts when rain is imminent",
-      "Atmospheric humidity and solar radiation tracking",
+      "Matched historical precipitation and temperature indicators",
+      "Clear distinction from a live weather forecast",
+      "Historical rainfall indicator included with each advisory",
+      "Dataset humidity and rainfall used transparently",
     ],
     metric: "Zero redundant irrigation before rainfall",
   },
@@ -81,23 +81,23 @@ const features = [
   {
     id: "ai-recommendations",
     icon: BrainCircuit,
-    title: "AI Recommendations",
-    tagline: "Machine Learning Engine",
+    title: "Dataset Recommendations",
+    tagline: "Historical Matching Engine",
     description:
-      "Receive personalized irrigation advice generated using machine learning and real-time farm data.",
+      "Receive irrigation advice generated from your inputs and historical sugarcane data.",
     color: "text-purple-600",
     bgColor: "bg-purple-50",
     badgeColor: "bg-purple-100 text-purple-800",
     accentColor: "border-purple-500",
     overview:
-      "Our AI model cross-references historical agronomic data, real-time telemetry, and weather forecasts to generate clear, actionable irrigation directives tailored for your farm.",
+      "The backend matches historical agronomic data by soil, sugarcane growth stage, and nearest soil-moisture value to produce an explainable result.",
     highlights: [
       "Plain-language advisory: exact time, duration, and pump settings",
-      "Transparent AI confidence score with explanatory factors",
-      "Continuous self-improving algorithms trained on farm telemetry",
-      "Fast one-click action to schedule or adjust recommendations",
+      "Transparent reference row and explanatory factors",
+      "No unsupported trained-model or sensor claims",
+      "One-click generation and persisted acceptance",
     ],
-    metric: "96% AI recommendation accuracy",
+    metric: "3,000 historical sugarcane records",
   },
   {
     id: "analytics-dashboard",
@@ -118,7 +118,7 @@ const features = [
       "Full audit trail of completed and scheduled irrigation events",
       "Exportable summary reports for farm and resource audits",
     ],
-    metric: "100% operational transparency in real-time",
+    metric: "Persistent per-farmer advisory history",
   },
   {
     id: "sustainable-farming",
@@ -146,10 +146,9 @@ const features = [
 const Features = () => {
   const [selectedFeature, setSelectedFeature] = useState(null);
 
-  const isRegistered = Boolean(getRegisteredUser());
-  const isLoggedIn = Boolean(getLoggedInUser());
-  const ctaPath = isLoggedIn ? "/dashboard" : isRegistered ? "/login" : "/register";
-  const ctaText = isLoggedIn ? "Open in Dashboard" : isRegistered ? "Log In to Access" : "Get Started Free";
+  const { user } = useAuth();
+  const ctaPath = user ? "/dashboard" : "/register";
+  const ctaText = user ? "Open in Dashboard" : "Get Started Free";
 
   // Handle ESC key to close modal
   useEffect(() => {
@@ -186,8 +185,8 @@ const Features = () => {
           </h2>
 
           <p className="mt-5 text-lg text-slate-600 leading-8">
-            Our AI-powered platform combines weather intelligence,
-            predictive analytics, and real-time monitoring to help
+            Our platform combines historical sugarcane data,
+            rule-based analysis, and persistent farm records to help
             farmers make informed irrigation decisions.
           </p>
         </div>

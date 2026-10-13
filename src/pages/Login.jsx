@@ -6,13 +6,15 @@ import farmImage from "../assets/farming.png";
 
 import AuthLayout from "../components/AuthLayout";
 import AuthInput from "../components/AuthInput";
-import { getLoggedInUser, loginUser } from "../auth";
+import { useAuth } from "../auth";
 
 
 const Login = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [loginError, setLoginError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user, loading, login } = useAuth();
 
   const {
     register,
@@ -21,20 +23,22 @@ const Login = () => {
   } = useForm();
 
   useEffect(() => {
-    if (getLoggedInUser()) {
+    if (!loading && user) {
       navigate("/dashboard", { replace: true });
     }
-  }, [navigate]);
+  }, [loading, navigate, user]);
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     setLoginError("");
-
-    if (!loginUser(data.email, data.password)) {
-      setLoginError("No matching account found. Please register first or check your details.");
-      return;
+    setIsSubmitting(true);
+    try {
+      await login(data.email, data.password);
+      navigate("/dashboard", { replace: true });
+    } catch (error) {
+      setLoginError(error.message);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    navigate("/dashboard", { replace: true });
   };
 
   return (
@@ -113,12 +117,7 @@ const Login = () => {
 
           </label>
 
-          <Link
-            to="/forgot-password"
-            className="text-green-600 hover:text-green-700 text-sm font-medium"
-          >
-            Forgot Password?
-          </Link>
+          <span className="text-xs text-slate-400">Secure server session</span>
 
         </div>
 
@@ -126,6 +125,7 @@ const Login = () => {
 
         <button
           type="submit"
+          disabled={isSubmitting}
           className="
             w-full
             mt-4
@@ -139,38 +139,7 @@ const Login = () => {
             shadow-lg
           "
         >
-          Login
-        </button>
-
-        {/* Divider */}
-
-        <div className="flex items-center gap-4 my-6">
-
-          <div className="flex-1 h-px bg-slate-300"></div>
-
-          <span className="text-slate-400 text-sm">
-            OR
-          </span>
-
-          <div className="flex-1 h-px bg-slate-300"></div>
-
-        </div>
-
-        {/* Google */}
-
-        <button
-          type="button"
-          className="
-            w-full
-            border
-            border-slate-300
-            rounded-xl
-            py-3
-            hover:bg-slate-100
-            transition
-          "
-        >
-          Continue with Google
+          {isSubmitting ? "Signing in..." : "Login"}
         </button>
 
         {/* Register */}

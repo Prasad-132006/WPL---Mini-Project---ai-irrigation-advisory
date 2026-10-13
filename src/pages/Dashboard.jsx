@@ -1,14 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
 import { LogOut, Sprout } from "lucide-react";
 import DashboardWorkspace from "../components/DashboardWorkspace";
-import { getLoggedInUser, logoutUser } from "../auth";
+import { useAuth } from "../auth";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const user = getLoggedInUser();
+  const { user, logout } = useAuth();
 
-  const handleLogout = () => {
-    logoutUser();
+  const handleLogout = async () => {
+    await logout();
     navigate("/login", { replace: true });
   };
 

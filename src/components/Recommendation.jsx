@@ -1,4 +1,3 @@
-import React from 'react';
 import { CloudRain, Droplets, Clock, Cpu, ArrowRight } from 'lucide-react';
 
 const Recommendation = () => {
@@ -9,7 +8,7 @@ const Recommendation = () => {
     cropStage: "Vegetative",
     waterRequired: "4,200 Litres",
     pumpDuration: "2 Hours",
-    aiConfidence: "96%",
+    aiConfidence: "Historical match",
   };
 
   return (
@@ -17,13 +16,13 @@ const Recommendation = () => {
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto mb-12">
         <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-sm font-medium mb-4">
-          <Cpu className="w-4 h-4 text-emerald-200" /> Real-Time Decision Support
+          <Cpu className="w-4 h-4 text-emerald-200" /> Dataset Decision Support
         </span>
         <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4">
-          Today's AI Recommendation
+          Today's Dataset Recommendation
         </h2>
         <p className="text-emerald-100 text-lg">
-          Personalized advice based on your current field moisture levels, live weather forecasting, and crop stage requirements.
+          Guidance based on manually entered field moisture, sugarcane stage requirements, and historical dataset indicators.
         </p>
       </div>
 
@@ -66,7 +65,7 @@ const Recommendation = () => {
 
           <div className="bg-white/5 rounded-xl p-4 border border-white/10">
             <div className="flex items-center gap-2 text-emerald-200 text-sm mb-1">
-              <Cpu className="w-4 h-4" /> AI Confidence
+              <Cpu className="w-4 h-4" /> Method
             </div>
             <p className="text-2xl font-bold text-emerald-300">{recommendationData.aiConfidence}</p>
           </div>

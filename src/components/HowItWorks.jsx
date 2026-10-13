@@ -11,21 +11,21 @@ const steps = [
     icon: UserRound,
     title: "Farmer Inputs",
     description:
-      "Enter farm details, crop stage, soil type, or connect IoT sensors for automatic data collection.",
+      "Enter sugarcane plot details, growth stage, soil type, and a current moisture reading.",
     color: "bg-green-100 text-green-600",
   },
   {
     icon: CloudSunRain,
-    title: "Weather & Sensor Data",
+    title: "Historical Dataset",
     description:
-      "The platform collects weather forecasts, rainfall predictions, and soil moisture readings.",
+      "The platform matches the field inputs against 3,000 historical sugarcane records.",
     color: "bg-blue-100 text-blue-600",
   },
   {
     icon: BrainCircuit,
-    title: "AI Analysis",
+    title: "Rule-Based Analysis",
     description:
-      "Machine learning analyzes historical irrigation data, weather conditions, and crop requirements.",
+      "Transparent rules compare soil type, crop stage, moisture, and historical water requirements.",
     color: "bg-purple-100 text-purple-600",
   },
   {
@@ -51,12 +51,12 @@ const HowItWorks = () => {
           </span>
 
           <h2 className="text-4xl font-bold text-slate-900 mt-4">
-            How Our AI Works
+            How AgroAI Works
           </h2>
 
           <p className="mt-5 text-lg text-slate-600 leading-8">
             From collecting field data to generating irrigation advice,
-            our AI-powered workflow helps farmers make better decisions
+            our transparent dataset workflow helps farmers make better decisions
             with confidence.
           </p>
 
@@ -126,7 +126,7 @@ const HowItWorks = () => {
 
             <p className="mt-4 text-green-100 max-w-2xl leading-7">
               By combining weather intelligence, soil moisture data,
-              and machine learning predictions, the platform helps
+              and historical comparisons, the platform helps
               farmers reduce water usage while improving crop health
               and productivity.
             </p>

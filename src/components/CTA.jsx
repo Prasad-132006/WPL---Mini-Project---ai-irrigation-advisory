@@ -30,16 +30,16 @@ const CTA = () => {
 
               <span className="sm:hidden"> </span>
 
-              with AI-Powered Irrigation
+              with Data-Guided Irrigation
 
             </h2>
 
             {/* Description */}
             <p className="mt-5 sm:mt-6 text-sm sm:text-base lg:text-lg text-green-50 leading-7 sm:leading-8 max-w-xl mx-auto lg:mx-0">
 
-              Join thousands of farmers using Artificial Intelligence
-              to optimize irrigation schedules, reduce water usage,
-              and improve crop productivity.
+              Use historical sugarcane data and saved farm conditions
+              to review irrigation schedules, water requirements,
+              and prior advisory decisions.
 
             </p>
 
@@ -54,7 +54,7 @@ const CTA = () => {
                 />
 
                 <span className="text-sm sm:text-base">
-                  AI-based Irrigation Recommendations
+                  Dataset-based Irrigation Recommendations
                 </span>
 
               </div>
@@ -67,7 +67,7 @@ const CTA = () => {
                 />
 
                 <span className="text-sm sm:text-base">
-                  Weather Forecast Integration
+                  Historical Weather Indicators
                 </span>
 
               </div>
@@ -80,7 +80,7 @@ const CTA = () => {
                 />
 
                 <span className="text-sm sm:text-base">
-                  Real-time Soil Moisture Monitoring
+                  Manual Soil Moisture Input
                 </span>
 
               </div>

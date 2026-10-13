@@ -1,188 +1,157 @@
-# Smart Irrigation Advisory System
+# AgroAI Sugarcane Smart Irrigation Advisory
 
-## Overview
+AgroAI is a locally runnable React, Express, and MongoDB college mini-project for sugarcane irrigation planning. Farmers can register, sign in, save one or more plots, generate recommendations from the included 3,000-row `FINAL_SUGARCANE_DATASET.csv`, accept an advisory, sign out, and retrieve their data later.
 
-Smart Irrigation Advisory System is an AI-powered web application designed to help sugarcane farmers optimize irrigation practices. The system analyzes farm conditions such as soil moisture, weather forecasts, and crop information to generate intelligent irrigation recommendations.
+The advisory engine is intentionally described accurately: it is a rule-based historical-record matcher, not a trained machine-learning model. Soil moisture is entered manually. Rainfall and temperature shown with a recommendation are historical indicators from the matched CSV row, not live sensor or weather data.
 
-The goal is to reduce water wastage, improve crop productivity, and support data-driven agricultural decision-making.
+## Stack
 
----
+- React 19 + Vite frontend
+- Node.js + Express backend
+- Local MongoDB through Mongoose
+- HTTP-only signed authentication cookie and bcrypt password hashing
+- Zod request validation, Helmet security headers, CORS, and authentication rate limiting
 
-## Problem Statement
+## Prerequisites
 
-Traditional irrigation decisions are often based on farmer experience rather than scientific data. This can lead to:
+- Node.js 20 or newer
+- MongoDB Community Server running as a local Windows service
+- MongoDB Compass for inspection
 
-* Over-irrigation
-* Water wastage
-* Reduced crop yield
-* Increased cultivation costs
-* Inefficient resource utilization
+No MongoDB Atlas account or paid service is required.
 
-This project provides a digital platform that assists farmers with irrigation planning using AI-driven recommendations.
+## First-time setup
 
----
+```powershell
+git clone --branch frontend https://github.com/Prasad-132006/WPL---Mini-Project---ai-irrigation-advisory.git
+cd WPL---Mini-Project---ai-irrigation-advisory
+npm install
+Copy-Item .env.example .env
+```
 
-## Current Features
-
-### Home Page
-
-* Responsive public home page
-* State-aware Get Started action for new, registered, and logged-in users
-* Registration and login flow using browser local storage
-* Protected dashboard route available at `/dashboard`
-
-### Farmer Dashboard
-
-* Plot name, area, crop, crop stage, soil type, and soil moisture inputs
-* IoT sensor connection toggle with live/manual mode
-* Rainfall probability, temperature, and sensor status display
-* AI analysis loading state
-* Dataset-backed irrigation timing, duration, water quantity, and method
-* Historical yield reference and disease-risk alert
-* Advisory acceptance control
-
-### Authentication
-
-1. A new user registers an account.
-2. The account is stored locally in the browser.
-3. Login is allowed only with the registered email and password.
-4. Successful login opens the protected dashboard.
-5. Logout clears the active session.
-
-### Dataset
-
-`FINAL_SUGARCANE_DATASET.csv` contains 3,000 historical sugarcane records. The dashboard loads it as a separate static asset and uses matching soil type and crop stage to provide reference-based recommendations using fields including:
-
-* Soil moisture
-* Rainfall and humidity
-* Irrigation water quantity per acre
-* Irrigation method
-* Growth stage
-* Yield per acre
-* Disease type and severity
-
-The current implementation is a frontend prototype. The dataset supports rule-based historical comparison; it is not yet a trained machine-learning model or a real-time IoT/weather integration.
-
----
-
-## Technology Stack
-
-### Frontend
-
-* React 19
-* Vite
-* React Router
-* Tailwind CSS
-* React Hook Form
-* Lucide React
-
-### Data Handling
-
-* CSV static asset loaded at runtime
-* Browser local storage for prototype authentication
-
-### Future Integration
-
-* Machine Learning Models
-* IoT Sensors
-* Weather APIs
-* Satellite Data
-* Generative AI Advisory Engine
-
----
-
-## Project Structure
+Change `JWT_SECRET` in `.env` to a long random value. The default MongoDB connection is:
 
 ```text
-src/
-├── auth.js                         # Prototype registration and session helpers
-├── App.jsx                         # Routes and protected dashboard boundary
-├── components/
-│   ├── DashboardWorkspace.jsx      # Interactive farmer workflow
-│   ├── DashboardPreview.jsx        # Dashboard visualization component
-│   ├── Hero.jsx                    # State-aware Get Started action
-│   └── ...
-├── data/
-│   └── sugarcaneDataset.js         # CSV loader and historical record matching
-└── pages/
-	├── Dashboard.jsx
-	├── Home.jsx
-	├── Login.jsx
-	└── Register.jsx
+mongodb://127.0.0.1:27017/agroai
 ```
 
----
+## Start local MongoDB for Compass
 
-## Installation
+MongoDB Compass is the graphical database manager. The MongoDB Community Server Windows service stores and serves the data that Compass displays. Install both MongoDB Community Server and Compass from MongoDB’s official installer, selecting **Install MongoD as a Service** during setup.
 
-### Clone Repository
+Check the local service from PowerShell:
 
-```bash
-git clone https://github.com/Prasad-132006/WPL---Mini-Project---ai-irrigation-advisory.git
+```powershell
+Get-Service MongoDB
 ```
 
-### Move to that directory
+If its status is not `Running`, start it from Windows Services or from an administrator PowerShell terminal:
 
-```bash
-cd WPL---Mini-Project---ai-irrigation-advisory
+```powershell
+Start-Service MongoDB
 ```
 
-### Install Dependencies
+The application connects directly to this local service. Docker, MongoDB Atlas, and cloud accounts are not used.
 
-```bash
-npm install
-```
+## Run the application
 
-### Run Project
-
-```bash
+```powershell
 npm run dev
 ```
 
-The application will start on:
+This starts both services:
 
-```text
-http://localhost:5173
-```
+- Frontend: `http://localhost:5173`
+- Backend API: `http://localhost:5000`
+- Health check: `http://localhost:5000/api/health`
 
-### Production Build
+Vite proxies `/api` requests to Express. For separate terminals, use `npm run dev:server` and `npm run dev:client`.
 
-```bash
+## Inspect records in MongoDB Compass
+
+1. Start the local `MongoDB` Windows service.
+2. Open MongoDB Compass.
+3. Paste `mongodb://127.0.0.1:27017` into **New Connection** and select **Connect**.
+4. Run AgroAI and complete registration, farm saving, or advisory generation.
+5. Select the refresh icon in Compass and open the `agroai` database.
+5. Inspect these collections:
+   - `farmers`: account, name, normalized email, bcrypt password hash, and profile fields
+   - `farms`: plot details with a `farmer` owner reference
+   - `advisories`: captured inputs, calculated recommendation, reference CSV row, and acceptance status
+
+The same owner ObjectId connects a farmer’s records. API queries always include that owner, so another authenticated farmer cannot read or modify them.
+
+## Main workflow
+
+1. Register with a unique email and password of at least 8 characters.
+2. The backend hashes the password and creates an HTTP-only session cookie.
+3. Enter a sugarcane plot name, area, stage, soil type, current moisture, electricity availability, and the pump's measured flow rate.
+4. Save the plot, or generate an advisory (which saves the plot first).
+5. The backend maps the UI stage to the dataset’s `Early`, `Mid`, or `Late` stage, filters by soil, compares current moisture with that full cohort, and exposes the closest raw CSV record for traceability.
+6. If moisture is low relative to the cohort, the backend produces a planning depth based on published sugarcane stage/soil guidance, converts millimetres to litres for the entered acreage, and uses the farmer's pump flow to estimate duration. Otherwise it recommends delaying or rechecking and prescribes zero water.
+7. Accepting the advisory persists `accepted: true` and `acceptedAt`.
+8. Log out and back in to reload saved plots and history.
+
+Only `Sugarcane` is accepted. The backend rejects another crop even if someone bypasses the frontend.
+
+### Dataset-quality boundary
+
+The attached CSV remains fully available to the matching workflow, but its raw water field is approximately 500–2,000 litres per acre and its rainfall-total field is approximately 800–2,000 mm. Those values are displayed as raw historical reference data rather than being misrepresented as an exact irrigation dose or rain probability. The operational planning depth and stage/soil interval follow the [Tamil Nadu Agricultural University sugarcane irrigation guidance](https://agritech.tnau.ac.in/expert_system/sugar/irrigationmanagement.html). Farmers must still check actual rainfall, drainage, calibrated root-zone moisture, and local agricultural advice.
+
+## API summary
+
+| Method | Route | Purpose |
+| --- | --- | --- |
+| `GET` | `/api/health` | Database and dataset readiness |
+| `POST` | `/api/auth/register` | Create a unique farmer account |
+| `POST` | `/api/auth/login` | Start a secure session |
+| `POST` | `/api/auth/logout` | Clear the session |
+| `GET` | `/api/auth/me` | Restore the signed-in farmer |
+| `GET/POST` | `/api/farms` | List or create owned plots |
+| `PUT` | `/api/farms/:id` | Update an owned plot |
+| `GET/POST` | `/api/advisories` | List or generate owned advisories |
+| `PATCH` | `/api/advisories/:id/accept` | Persist acceptance for an owned advisory |
+
+## Verification
+
+Run static checks and the production build:
+
+```powershell
+npm run lint
 npm run build
 ```
 
-### Lint
+The automated integration test uses the same local MongoDB Community Server but a separate `agroai_test` database. It never drops or modifies the demonstration `agroai` database:
 
-```bash
-npm run lint
+```powershell
+npm test
 ```
 
----
+The test verifies all 3,000 dataset rows load, low-moisture volume and pump calculations, wet-field zero-water behavior, registration, case-insensitive duplicate-email rejection, password hashing, session protection, logout/login persistence, farm creation, advisory generation, acceptance persistence, unsupported-crop rejection, and isolation between two farmers.
 
-## Future Enhancements
+## Project structure
 
-* Real-time IoT sensor integration
-* Weather API integration
-* Trained machine learning-based irrigation prediction
-* Crop water requirement forecasting
-* Yield prediction
-* Secure backend authentication and database storage
-* Multilingual farmer chatbot
-* GIS-based farm visualization
-* Mobile application support
+```text
+server/
+  app.js             Express routes and error handling
+  auth.js            HTTP-only JWT cookie authentication
+  dataset.js         CSV loading and historical matching
+  models.js          MongoDB farmers, farms, and advisories
+  validation.js      API input validation
+  app.test.js        Database-backed integration tests
+src/
+  api.js             Credentialed frontend API client
+  auth.jsx           Persistent React authentication state
+  components/        Existing UI plus connected dashboard workspace
+FINAL_SUGARCANE_DATASET.csv
+```
 
----
+## Security and reliability notes
 
-## Expected Benefits
-
-* Improved water-use efficiency
-* Reduced irrigation costs
-* Better crop productivity
-* Data-driven farming decisions
-* Sustainable agricultural practices
-
----
-
-## Authors
-
-Developed as an academic project for AI-enabled Smart Irrigation Advisory System in Agriculture.
+- Password hashes are never returned by the API.
+- Authentication state is not stored in local storage.
+- Cookies are HTTP-only, SameSite=Lax, and secure in production mode.
+- Duplicate email and duplicate per-farmer plot names are protected by database indexes.
+- All farm and advisory reads and writes are scoped to the authenticated farmer.
+- API inputs are size-limited and validated; Sugarcane is enforced at both validation and database levels.
+- The server exits with a clear message when MongoDB is unavailable rather than running in a partially connected state.

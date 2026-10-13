@@ -7,7 +7,7 @@ const Announcement = () => {
         <Sparkles size={18} className="text-yellow-300" />
 
         <p className="text-center">
-          AI-powered Smart Irrigation Advisory is now available for farmers.
+          Sugarcane Smart Irrigation Advisory is now available for farmers.
           <span className="ml-2 font-semibold underline cursor-pointer hover:text-green-300 transition">
             Learn More
           </span>

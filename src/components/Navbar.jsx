@@ -9,17 +9,15 @@ import {
   LogOut,
   LayoutDashboard,
 } from "lucide-react";
-import { getLoggedInUser, logoutUser } from "../auth";
+import { useAuth } from "../auth";
 
 const Navbar = () => {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState(() => getLoggedInUser());
+  const { user: loggedInUser, logout } = useAuth();
 
-  // Detect scroll and sync auth state
+  // Detect scroll
   useEffect(() => {
-    setLoggedInUser(getLoggedInUser());
-
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
@@ -31,9 +29,8 @@ const Navbar = () => {
     };
   }, []);
 
-  const handleLogout = () => {
-    logoutUser();
-    setLoggedInUser(null);
+  const handleLogout = async () => {
+    await logout();
     setMobileMenu(false);
   };
 
