@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
   },
 }, { timestamps: true, collection: "farmers" });
 
-const farmSchema = new mongoose.Schema({
+const fieldSchema = new mongoose.Schema({
   farmer: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
   farmName: { type: String, required: true, trim: true },
   area: { type: Number, required: true, min: 0.1, max: 100000 },
@@ -20,13 +20,13 @@ const farmSchema = new mongoose.Schema({
   electricity: { type: String, enum: ["Available", "Unavailable"], default: "Available" },
   soilMoisture: { type: Number, required: true, min: 0, max: 100 },
   pumpFlowRateLph: { type: Number, required: true, min: 100, max: 1000000 },
-}, { timestamps: true, collection: "farms" });
+}, { timestamps: true, collection: "fields" });
 
-farmSchema.index({ farmer: 1, farmName: 1 }, { unique: true });
+fieldSchema.index({ farmer: 1, farmName: 1 }, { unique: true });
 
 const advisorySchema = new mongoose.Schema({
   farmer: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
-  farm: { type: mongoose.Schema.Types.ObjectId, ref: "Farm", required: true, index: true },
+  field: { type: mongoose.Schema.Types.ObjectId, ref: "Field", required: true, index: true },
   inputs: {
     crop: { type: String, enum: ["Sugarcane"], required: true },
     cropStage: String,
@@ -63,5 +63,5 @@ const advisorySchema = new mongoose.Schema({
 }, { timestamps: true, collection: "advisories" });
 
 export const User = mongoose.model("User", userSchema);
-export const Farm = mongoose.model("Farm", farmSchema);
+export const Field = mongoose.model("Field", fieldSchema);
 export const Advisory = mongoose.model("Advisory", advisorySchema);

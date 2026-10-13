@@ -45,7 +45,7 @@ const CookieBanner = () => {
         </div>
 
         <p className="text-xs text-slate-300 leading-relaxed">
-          We use an essential HTTP-only cookie to authenticate your session. Farm and advisory records are stored in your local MongoDB database.
+          We use an essential HTTP-only cookie to authenticate your session. Field and advisory records are stored in your local MongoDB database.
         </p>
 
         <div className="flex items-center gap-2 pt-1">

@@ -2,7 +2,7 @@
 
 ## Scope
 
-AgroAI is a sugarcane-only smart irrigation advisory system. It combines farmer-entered conditions with `FINAL_SUGARCANE_DATASET.csv` and stores farmer, farm, recommendation, and acceptance records in a local MongoDB database.
+AgroAI is a sugarcane-only smart irrigation advisory system. It combines farmer-entered conditions with `FINAL_SUGARCANE_DATASET.csv` and stores farmer, field, recommendation, and acceptance records in a local MongoDB database.
 
 It does not claim a trained AI model, physical IoT integration, or a live weather service. Dataset rainfall, humidity, temperature, disease, yield, and irrigation fields are historical reference values.
 
@@ -14,10 +14,10 @@ React browser
 Express validation and authenticated owner check
   -> Mongoose
 Local MongoDB (agroai)
-  -> farmers / farms / advisories
+  -> farmers / fields / advisories
 
 Recommendation request
-  -> read owned farm
+  -> read owned field
   -> match historical CSV record
   -> calculate water and duration
   -> persist advisory
@@ -33,10 +33,12 @@ The `passwordHash` field is excluded from normal database queries and never appe
 ## Data model
 
 - `farmers`: name, normalized unique email, password hash, optional profile, timestamps
-- `farms`: farmer owner, plot name, area, fixed Sugarcane crop, crop stage, soil type, electricity availability, current moisture, timestamps
-- `advisories`: farmer owner, farm reference, immutable input snapshot, calculated recommendation, reference CSV row, accepted state, accepted time, timestamps
+- `fields`: farmer owner, field name, area, fixed Sugarcane crop, crop stage, soil type, electricity availability, current moisture, pump flow, timestamps
+- `advisories`: farmer owner, field reference, immutable input snapshot, calculated recommendation, reference CSV row, accepted state, accepted time, timestamps
 
-Every farm and advisory operation includes the authenticated farmer ID. Object IDs alone do not grant access.
+Every field and advisory operation includes the authenticated farmer ID. Object IDs alone do not grant access. The My Fields interface lists each owned field as a separate card and filters advisory history by its `field` reference.
+
+Legacy `farms` records are copied to `fields` with identifiers and ownership intact. Advisory references are migrated from `farm` to `field`; the legacy collection is removed only after the copy and relationships are verified.
 
 ## Recommendation method
 

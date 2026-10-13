@@ -11,7 +11,7 @@ export const loginSchema = z.object({
   password: z.string().min(1).max(72),
 });
 
-export const farmSchema = z.object({
+export const fieldSchema = z.object({
   farmName: z.string().trim().min(2).max(80),
   area: z.coerce.number().min(0.1).max(100000),
   crop: z.literal("Sugarcane"),
@@ -23,7 +23,7 @@ export const farmSchema = z.object({
 });
 
 export const advisorySchema = z.object({
-  farmId: z.string().regex(/^[a-f\d]{24}$/i),
+  fieldId: z.string().regex(/^[a-f\d]{24}$/i),
 });
 
 export const parseBody = (schema, body) => {

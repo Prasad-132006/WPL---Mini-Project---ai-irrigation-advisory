@@ -72,12 +72,12 @@ Vite proxies `/api` requests to Express. For separate terminals, use `npm run de
 1. Start the local `MongoDB` Windows service.
 2. Open MongoDB Compass.
 3. Paste `mongodb://127.0.0.1:27017` into **New Connection** and select **Connect**.
-4. Run AgroAI and complete registration, farm saving, or advisory generation.
+4. Run AgroAI and complete registration, field saving, or advisory generation.
 5. Select the refresh icon in Compass and open the `agroai` database.
 5. Inspect these collections:
    - `farmers`: account, name, normalized email, bcrypt password hash, and profile fields
-   - `farms`: plot details with a `farmer` owner reference
-   - `advisories`: captured inputs, calculated recommendation, reference CSV row, and acceptance status
+   - `fields`: separate sugarcane field documents with a `farmer` owner reference
+   - `advisories`: captured inputs, calculated recommendation, a `field` reference, and acceptance status
 
 The same owner ObjectId connects a farmer’s records. API queries always include that owner, so another authenticated farmer cannot read or modify them.
 
@@ -85,12 +85,16 @@ The same owner ObjectId connects a farmer’s records. API queries always includ
 
 1. Register with a unique email and password of at least 8 characters.
 2. The backend hashes the password and creates an HTTP-only session cookie.
-3. Enter a sugarcane plot name, area, stage, soil type, current moisture, electricity availability, and the pump's measured flow rate.
-4. Save the plot, or generate an advisory (which saves the plot first).
+3. Open **My Fields**, add a sugarcane field, and enter its name, area, stage, soil type, current moisture, electricity availability, and measured pump flow rate.
+4. Save the field, or generate an advisory (which saves the field first). Multiple fields are stored as separate documents.
 5. The backend maps the UI stage to the dataset’s `Early`, `Mid`, or `Late` stage, filters by soil, compares current moisture with that full cohort, and exposes the closest raw CSV record for traceability.
 6. If moisture is low relative to the cohort, the backend produces a planning depth based on published sugarcane stage/soil guidance, converts millimetres to litres for the entered acreage, and uses the farmer's pump flow to estimate duration. Otherwise it recommends delaying or rechecking and prescribes zero water.
 7. Accepting the advisory persists `accepted: true` and `acceptedAt`.
-8. Log out and back in to reload saved plots and history.
+8. Log out and back in to reload saved fields and their individual histories.
+
+### Existing `farms` collection migration
+
+On startup, the backend checks for the legacy `farms` collection. It copies every record into `fields` with the same `_id` and `farmer`, adds the corresponding `field` reference to legacy advisories, and verifies identifiers, ownership, crop values, and advisory relationships. The old collection is dropped only after all checks pass; on any mismatch the server stops and preserves `farms`. The migration is idempotent, so normal restarts do not duplicate records.
 
 Only `Sugarcane` is accepted. The backend rejects another crop even if someone bypasses the frontend.
 
@@ -107,8 +111,9 @@ The attached CSV remains fully available to the matching workflow, but its raw w
 | `POST` | `/api/auth/login` | Start a secure session |
 | `POST` | `/api/auth/logout` | Clear the session |
 | `GET` | `/api/auth/me` | Restore the signed-in farmer |
-| `GET/POST` | `/api/farms` | List or create owned plots |
-| `PUT` | `/api/farms/:id` | Update an owned plot |
+| `GET/POST` | `/api/fields` | List or create owned fields |
+| `GET` | `/api/fields/:id` | Retrieve an owned field with its advisories |
+| `PUT` | `/api/fields/:id` | Update an owned field |
 | `GET/POST` | `/api/advisories` | List or generate owned advisories |
 | `PATCH` | `/api/advisories/:id/accept` | Persist acceptance for an owned advisory |
 
@@ -127,7 +132,7 @@ The automated integration test uses the same local MongoDB Community Server but 
 npm test
 ```
 
-The test verifies all 3,000 dataset rows load, low-moisture volume and pump calculations, wet-field zero-water behavior, registration, case-insensitive duplicate-email rejection, password hashing, session protection, logout/login persistence, farm creation, advisory generation, acceptance persistence, unsupported-crop rejection, and isolation between two farmers.
+The tests verify all 3,000 dataset rows load, low-moisture volume and pump calculations, wet-field zero-water behavior, safe legacy migration, registration, case-insensitive duplicate-email rejection, password hashing, session protection, multiple-field persistence, field editing and detail retrieval, advisory generation and association, acceptance persistence, unsupported-crop rejection, and isolation between two farmers.
 
 ## Project structure
 
@@ -136,7 +141,8 @@ server/
   app.js             Express routes and error handling
   auth.js            HTTP-only JWT cookie authentication
   dataset.js         CSV loading and historical matching
-  models.js          MongoDB farmers, farms, and advisories
+  migrate.js         Verified farms-to-fields migration
+  models.js          MongoDB farmers, fields, and advisories
   validation.js      API input validation
   app.test.js        Database-backed integration tests
 src/
@@ -151,7 +157,7 @@ FINAL_SUGARCANE_DATASET.csv
 - Password hashes are never returned by the API.
 - Authentication state is not stored in local storage.
 - Cookies are HTTP-only, SameSite=Lax, and secure in production mode.
-- Duplicate email and duplicate per-farmer plot names are protected by database indexes.
-- All farm and advisory reads and writes are scoped to the authenticated farmer.
+- Duplicate email and duplicate per-farmer field names are protected by database indexes.
+- All field and advisory reads and writes are scoped to the authenticated farmer.
 - API inputs are size-limited and validated; Sugarcane is enforced at both validation and database levels.
 - The server exits with a clear message when MongoDB is unavailable rather than running in a partially connected state.

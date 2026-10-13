@@ -3,8 +3,9 @@ import assert from "node:assert/strict";
 import mongoose from "mongoose";
 import request from "supertest";
 import { createApp } from "./app.js";
-import { Advisory, Farm, User } from "./models.js";
+import { Advisory, Field, User } from "./models.js";
 import { createRecommendation, datasetSize } from "./dataset.js";
+import { migrateFarmsToFields } from "./migrate.js";
 
 const mongoUri = process.env.TEST_MONGODB_URI || "mongodb://127.0.0.1:27017/agroai_test";
 const app = createApp();
@@ -58,6 +59,38 @@ test("all sugarcane stage and soil combinations return coherent advice", () => {
   }
 });
 
+test("safely migrates legacy farms and advisory relationships to fields", async () => {
+  const farmerId = new mongoose.Types.ObjectId();
+  const fieldId = new mongoose.Types.ObjectId();
+  await mongoose.connection.collection("farms").insertOne({
+    _id: fieldId,
+    farmer: farmerId,
+    farmName: "Legacy North Field",
+    area: 2,
+    crop: "Sugarcane",
+    cropStage: "Vegetative",
+    soilType: "Loamy",
+    electricity: "Available",
+    soilMoisture: 20,
+    pumpFlowRateLph: 20000,
+  });
+  const advisoryId = new mongoose.Types.ObjectId();
+  await mongoose.connection.collection("advisories").insertOne({ _id: advisoryId, farmer: farmerId, farm: fieldId });
+
+  const result = await migrateFarmsToFields();
+  assert.deepEqual(result, { migratedFields: 1, migratedAdvisories: 1, removedLegacyCollection: true });
+  const migratedField = await mongoose.connection.collection("fields").findOne({ _id: fieldId });
+  assert.equal(String(migratedField._id), String(fieldId));
+  assert.equal(String(migratedField.farmer), String(farmerId));
+  assert.equal(migratedField.farmName, "Legacy North Field");
+  const migratedAdvisory = await mongoose.connection.collection("advisories").findOne({ _id: advisoryId });
+  assert.equal(String(migratedAdvisory.field), String(fieldId));
+  assert.equal((await mongoose.connection.db.listCollections({ name: "farms" }).toArray()).length, 0);
+
+  await mongoose.connection.collection("fields").deleteMany({});
+  await mongoose.connection.collection("advisories").deleteMany({});
+});
+
 test("complete auth, persistence, acceptance, duplicate-email, and user-isolation workflow", async () => {
   const farmerOne = request.agent(app);
   const farmerTwo = request.agent(app);
@@ -69,25 +102,34 @@ test("complete auth, persistence, acceptance, duplicate-email, and user-isolatio
   const duplicate = await request(app).post("/api/auth/register").send({ name: "Duplicate Farmer", email: "ONE@example.com", password: "strongpass2" });
   assert.equal(duplicate.status, 409);
 
-  const unsupportedCrop = await farmerOne.post("/api/farms").send({ farmName: "Bad Plot", area: 1, crop: "Wheat", cropStage: "Vegetative", soilType: "Loamy", electricity: "Available", soilMoisture: 24, pumpFlowRateLph: 20000 });
+  const unsupportedCrop = await farmerOne.post("/api/fields").send({ farmName: "Bad Field", area: 1, crop: "Wheat", cropStage: "Vegetative", soilType: "Loamy", electricity: "Available", soilMoisture: 24, pumpFlowRateLph: 20000 });
   assert.equal(unsupportedCrop.status, 400);
-  const baseFarm = { farmName: "Validation Plot", area: 1, crop: "Sugarcane", cropStage: "Vegetative", soilType: "Loamy", electricity: "Available", soilMoisture: 24, pumpFlowRateLph: 20000 };
-  assert.equal((await farmerOne.post("/api/farms").send({ ...baseFarm, area: 0 })).status, 400);
-  assert.equal((await farmerOne.post("/api/farms").send({ ...baseFarm, soilMoisture: 101 })).status, 400);
-  assert.equal((await farmerOne.post("/api/farms").send({ ...baseFarm, pumpFlowRateLph: 99 })).status, 400);
-  assert.equal((await farmerOne.post("/api/farms").send({ ...baseFarm, cropStage: "Flowering" })).status, 400);
-  assert.equal((await farmerOne.post("/api/farms").send({ ...baseFarm, soilType: "Peaty" })).status, 400);
-  assert.equal((await farmerOne.post("/api/farms").send({ ...baseFarm, electricity: "Sometimes" })).status, 400);
+  const baseField = { farmName: "Validation Field", area: 1, crop: "Sugarcane", cropStage: "Vegetative", soilType: "Loamy", electricity: "Available", soilMoisture: 24, pumpFlowRateLph: 20000 };
+  assert.equal((await farmerOne.post("/api/fields").send({ ...baseField, area: 0 })).status, 400);
+  assert.equal((await farmerOne.post("/api/fields").send({ ...baseField, soilMoisture: 101 })).status, 400);
+  assert.equal((await farmerOne.post("/api/fields").send({ ...baseField, pumpFlowRateLph: 99 })).status, 400);
+  assert.equal((await farmerOne.post("/api/fields").send({ ...baseField, cropStage: "Flowering" })).status, 400);
+  assert.equal((await farmerOne.post("/api/fields").send({ ...baseField, soilType: "Peaty" })).status, 400);
+  assert.equal((await farmerOne.post("/api/fields").send({ ...baseField, electricity: "Sometimes" })).status, 400);
 
-  const farmResponse = await farmerOne.post("/api/farms").send({ farmName: "North Plot", area: 2.5, crop: "Sugarcane", cropStage: "Grand growth", soilType: "Loamy", electricity: "Available", soilMoisture: 12, pumpFlowRateLph: 20000 });
-  assert.equal(farmResponse.status, 201);
-  const farmId = farmResponse.body.farm._id;
-  assert.equal(farmResponse.body.farm.crop, "Sugarcane");
-  assert.equal(farmResponse.body.farm.pumpFlowRateLph, 20000);
+  const fieldResponse = await farmerOne.post("/api/fields").send({ farmName: "North Field", area: 2.5, crop: "Sugarcane", cropStage: "Grand growth", soilType: "Loamy", electricity: "Available", soilMoisture: 12, pumpFlowRateLph: 20000 });
+  assert.equal(fieldResponse.status, 201);
+  const fieldId = fieldResponse.body.field._id;
+  assert.equal(fieldResponse.body.field.crop, "Sugarcane");
+  assert.equal(fieldResponse.body.field.pumpFlowRateLph, 20000);
 
-  const advisoryResponse = await farmerOne.post("/api/advisories").send({ farmId });
+  const secondFieldResponse = await farmerOne.post("/api/fields").send({ farmName: "South Field", area: 1.2, crop: "Sugarcane", cropStage: "Vegetative", soilType: "Sandy", electricity: "Unavailable", soilMoisture: 18, pumpFlowRateLph: 15000 });
+  assert.equal(secondFieldResponse.status, 201);
+  const secondFieldId = secondFieldResponse.body.field._id;
+  const updatedField = await farmerOne.put(`/api/fields/${secondFieldId}`).send({ ...secondFieldResponse.body.field, area: 1.5, soilMoisture: 22 });
+  assert.equal(updatedField.status, 200);
+  assert.equal(updatedField.body.field.area, 1.5);
+  assert.equal(updatedField.body.field.soilMoisture, 22);
+
+  const advisoryResponse = await farmerOne.post("/api/advisories").send({ fieldId });
   assert.equal(advisoryResponse.status, 201);
   assert.equal(advisoryResponse.body.advisory.inputs.crop, "Sugarcane");
+  assert.equal(advisoryResponse.body.advisory.field, fieldId);
   assert.ok(advisoryResponse.body.advisory.recommendation.waterRequiredLitres > 0);
 
   const accepted = await farmerOne.patch(`/api/advisories/${advisoryResponse.body.advisory._id}/accept`);
@@ -95,17 +137,24 @@ test("complete auth, persistence, acceptance, duplicate-email, and user-isolatio
   assert.equal(accepted.body.advisory.accepted, true);
 
   await farmerOne.post("/api/auth/logout");
-  assert.equal((await farmerOne.get("/api/farms")).status, 401);
+  assert.equal((await farmerOne.get("/api/fields")).status, 401);
   assert.equal((await farmerOne.post("/api/auth/login").send({ email: "one@example.com", password: "strongpass1" })).status, 200);
-  assert.equal((await farmerOne.get("/api/farms")).body.farms.length, 1);
+  const restoredFields = await farmerOne.get("/api/fields");
+  assert.equal(restoredFields.body.fields.length, 2);
+  const fieldDetails = await farmerOne.get(`/api/fields/${fieldId}`);
+  assert.equal(fieldDetails.status, 200);
+  assert.equal(fieldDetails.body.field.farmName, "North Field");
+  assert.equal(fieldDetails.body.advisories.length, 1);
   assert.equal((await farmerOne.get("/api/advisories")).body.advisories[0].accepted, true);
 
   assert.equal((await farmerTwo.post("/api/auth/register").send({ name: "Farmer Two", email: "two@example.com", password: "strongpass2" })).status, 201);
-  assert.deepEqual((await farmerTwo.get("/api/farms")).body.farms, []);
-  assert.equal((await farmerTwo.post("/api/advisories").send({ farmId })).status, 404);
+  assert.deepEqual((await farmerTwo.get("/api/fields")).body.fields, []);
+  assert.equal((await farmerTwo.get(`/api/fields/${fieldId}`)).status, 404);
+  assert.equal((await farmerTwo.put(`/api/fields/${fieldId}`).send(baseField)).status, 404);
+  assert.equal((await farmerTwo.post("/api/advisories").send({ fieldId })).status, 404);
 
   assert.equal(await User.countDocuments(), 2);
-  assert.equal(await Farm.countDocuments(), 1);
+  assert.equal(await Field.countDocuments(), 2);
   assert.equal(await Advisory.countDocuments(), 1);
   const storedUser = await User.findOne({ email: "one@example.com" }).select("+passwordHash");
   assert.notEqual(storedUser.passwordHash, "strongpass1");

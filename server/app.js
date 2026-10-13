@@ -5,8 +5,8 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import bcrypt from "bcryptjs";
 import { config } from "./config.js";
-import { Advisory, Farm, User } from "./models.js";
-import { advisorySchema, farmSchema, loginSchema, parseBody, registerSchema } from "./validation.js";
+import { Advisory, Field, User } from "./models.js";
+import { advisorySchema, fieldSchema, loginSchema, parseBody, registerSchema } from "./validation.js";
 import { clearSession, publicUser, requireAuth, setSession } from "./auth.js";
 import { createRecommendation, datasetSize } from "./dataset.js";
 
@@ -48,33 +48,40 @@ export const createApp = () => {
 
   app.get("/api/auth/me", requireAuth, (req, res) => res.json({ user: publicUser(req.user) }));
 
-  app.get("/api/farms", requireAuth, async (req, res) => {
-    const farms = await Farm.find({ farmer: req.user._id }).sort({ updatedAt: -1 });
-    res.json({ farms });
+  app.get("/api/fields", requireAuth, async (req, res) => {
+    const fields = await Field.find({ farmer: req.user._id }).sort({ updatedAt: -1 });
+    res.json({ fields });
   });
 
-  app.post("/api/farms", requireAuth, async (req, res) => {
-    const data = parseBody(farmSchema, req.body);
-    const farm = await Farm.create({ ...data, farmer: req.user._id });
-    res.status(201).json({ farm });
+  app.get("/api/fields/:id", requireAuth, async (req, res) => {
+    const field = await Field.findOne({ _id: req.params.id, farmer: req.user._id });
+    if (!field) return res.status(404).json({ message: "Field not found." });
+    const advisories = await Advisory.find({ field: field._id, farmer: req.user._id }).sort({ createdAt: -1 });
+    res.json({ field, advisories });
   });
 
-  app.put("/api/farms/:id", requireAuth, async (req, res) => {
-    const data = parseBody(farmSchema, req.body);
-    const farm = await Farm.findOneAndUpdate({ _id: req.params.id, farmer: req.user._id }, data, { returnDocument: "after", runValidators: true });
-    if (!farm) return res.status(404).json({ message: "Farm not found." });
-    res.json({ farm });
+  app.post("/api/fields", requireAuth, async (req, res) => {
+    const data = parseBody(fieldSchema, req.body);
+    const field = await Field.create({ ...data, farmer: req.user._id });
+    res.status(201).json({ field });
+  });
+
+  app.put("/api/fields/:id", requireAuth, async (req, res) => {
+    const data = parseBody(fieldSchema, req.body);
+    const field = await Field.findOneAndUpdate({ _id: req.params.id, farmer: req.user._id }, data, { returnDocument: "after", runValidators: true });
+    if (!field) return res.status(404).json({ message: "Field not found." });
+    res.json({ field });
   });
 
   app.post("/api/advisories", requireAuth, async (req, res) => {
-    const { farmId } = parseBody(advisorySchema, req.body);
-    const farm = await Farm.findOne({ _id: farmId, farmer: req.user._id });
-    if (!farm) return res.status(404).json({ message: "Farm not found." });
-    const recommendation = createRecommendation(farm.toObject());
+    const { fieldId } = parseBody(advisorySchema, req.body);
+    const field = await Field.findOne({ _id: fieldId, farmer: req.user._id });
+    if (!field) return res.status(404).json({ message: "Field not found." });
+    const recommendation = createRecommendation(field.toObject());
     const advisory = await Advisory.create({
       farmer: req.user._id,
-      farm: farm._id,
-      inputs: { crop: farm.crop, cropStage: farm.cropStage, soilType: farm.soilType, soilMoisture: farm.soilMoisture, area: farm.area, pumpFlowRateLph: farm.pumpFlowRateLph, electricity: farm.electricity },
+      field: field._id,
+      inputs: { crop: field.crop, cropStage: field.cropStage, soilType: field.soilType, soilMoisture: field.soilMoisture, area: field.area, pumpFlowRateLph: field.pumpFlowRateLph, electricity: field.electricity },
       recommendation,
     });
     res.status(201).json({ advisory });
@@ -100,7 +107,7 @@ export const createApp = () => {
     void _next;
     if (error?.code === 11000) {
       const field = Object.keys(error.keyPattern || {})[0];
-      return res.status(409).json({ message: field === "email" ? "An account with this email already exists." : "A farm with this plot name already exists." });
+      return res.status(409).json({ message: field === "email" ? "An account with this email already exists." : "A field with this name already exists." });
     }
     if (!error.status || error.status >= 500) console.error(error);
     res.status(error.status || 500).json({ message: error.status ? error.message : "The server could not complete the request." });
