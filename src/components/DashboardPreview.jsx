@@ -32,6 +32,9 @@ const DashboardPreview = () => {
           Review historical conditions, soil moisture, recommendations,
           and irrigation schedules from a single intelligent dashboard.
         </p>
+        <p className="mt-3 text-sm font-medium text-amber-700">
+          Illustrative interface preview — the values below are examples, not live farm, sensor, or weather data.
+        </p>
       </div>
 
       {/* Dashboard Container */}
@@ -63,13 +66,13 @@ const DashboardPreview = () => {
           <div className="bg-white rounded-2xl p-5 sm:p-6 shadow-sm">
             <CloudRain className="text-blue-500" size={24} />
             <h3 className="mt-4 sm:mt-5 text-sm sm:text-base text-slate-500">
-              Rain Probability
+              Historical Rainfall
             </h3>
             <h2 className="text-3xl sm:text-4xl font-bold mt-2">
-              78%
+              CSV
             </h2>
             <p className="text-blue-600 text-sm sm:text-base mt-3 sm:mt-4">
-              Expected Tomorrow
+              Reference field
             </p>
           </div>
 
@@ -112,7 +115,7 @@ const DashboardPreview = () => {
             {/* Header */}
             <div className="flex items-start justify-between gap-4">
               <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
-                Today's Dataset Recommendation
+                Example Dataset Recommendation
               </h3>
               <BrainCircuit className="text-green-600 shrink-0" size={30} />
             </div>
@@ -128,9 +131,9 @@ const DashboardPreview = () => {
 
               <div className="flex justify-between items-center gap-4">
                 <span className="text-sm sm:text-base text-slate-600">
-                  Rain Chance
+                  Historical rainfall
                 </span>
-                <strong className="text-sm sm:text-base">78%</strong>
+                <strong className="text-sm sm:text-base">Matched CSV row</strong>
               </div>
 
               <div className="flex justify-between items-center gap-4">
@@ -145,7 +148,7 @@ const DashboardPreview = () => {
                   Irrigation
                 </span>
                 <strong className="text-sm sm:text-base text-green-600 text-right">
-                  Tomorrow Morning
+                  Check field before watering
                 </strong>
               </div>
 
@@ -171,31 +174,31 @@ const DashboardPreview = () => {
 
             <div className="flex items-center gap-3">
               <TrendingUp className="text-green-600 shrink-0" size={24} />
-              <h3 className="text-xl font-bold">Weekly Analytics</h3>
+              <h3 className="text-xl font-bold">Saved Data Overview</h3>
             </div>
 
             {/* Analytics */}
             <div className="mt-6 sm:mt-8 space-y-5 sm:space-y-6">
 
-              {/* Water Saved */}
+              {/* Data source */}
               <div>
                 <div className="flex justify-between mb-2 text-sm sm:text-base">
-                  <span>Water Saved</span>
-                  <span>40%</span>
+                  <span>Moisture Source</span>
+                  <span>Manual</span>
                 </div>
                 <div className="h-3 rounded-full bg-slate-200 overflow-hidden">
-                  <div className="w-2/5 h-full rounded-full bg-green-600"></div>
+                  <div className="w-full h-full rounded-full bg-green-600"></div>
                 </div>
               </div>
 
-              {/* Crop Health */}
+              {/* Storage */}
               <div>
                 <div className="flex justify-between mb-2 text-sm sm:text-base">
-                  <span>Crop Health</span>
-                  <span>88%</span>
+                  <span>Advisory History</span>
+                  <span>MongoDB</span>
                 </div>
                 <div className="h-3 rounded-full bg-slate-200 overflow-hidden">
-                  <div className="w-[88%] h-full rounded-full bg-blue-500"></div>
+                  <div className="w-full h-full rounded-full bg-blue-500"></div>
                 </div>
               </div>
 
@@ -212,13 +215,13 @@ const DashboardPreview = () => {
 
             </div>
 
-            {/* Farm Status */}
+            {/* Preview status */}
             <div className="mt-8 sm:mt-10 flex items-start gap-3 bg-green-50 rounded-xl p-4">
               <Activity className="text-green-600 shrink-0 mt-0.5" size={22} />
               <div>
-                <h4 className="font-semibold">Farm Status</h4>
+                <h4 className="font-semibold">Preview Status</h4>
                 <p className="text-sm text-slate-500 mt-1">
-                  All systems operating normally.
+                  Example only. Open the dashboard to use your saved plot data.
                 </p>
               </div>
             </div>
@@ -269,31 +272,31 @@ const DashboardPreview = () => {
                   Executive Summary
                 </div>
                 <p className="text-slate-600 leading-relaxed text-sm">
-                  Soil moisture is approaching critical vegetative stress threshold (24%). A 78% precipitation probability is predicted within 24 hours. Early morning drip irrigation is recommended to prevent root stress before rainfall begins.
+                  This example uses a manually entered 24% soil-moisture reading. The real dashboard compares farmer inputs with the matched historical sugarcane cohort and asks the farmer to verify current field and rainfall conditions before irrigating.
                 </p>
               </div>
 
-              {/* Sensor Diagnostics Grid */}
+              {/* Example inputs and references */}
               <div>
                 <h4 className="font-semibold text-slate-900 mb-3">
-                  Sensor Diagnostics
+                  Example Input and Reference Data
                 </h4>
                 <div className="grid grid-cols-2 gap-3 text-xs sm:text-sm">
                   <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                    <span className="text-slate-500 block">Root Zone Temp:</span>
-                    <strong className="text-slate-900">22.4°C (Optimal)</strong>
+                    <span className="text-slate-500 block">Soil Moisture:</span>
+                    <strong className="text-slate-900">24% (manually entered)</strong>
                   </div>
                   <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                    <span className="text-slate-500 block">Nitrogen Levels (N):</span>
-                    <strong className="text-slate-900">140 ppm (Good)</strong>
+                    <span className="text-slate-500 block">Crop Stage:</span>
+                    <strong className="text-slate-900">Vegetative</strong>
                   </div>
                   <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                    <span className="text-slate-500 block">Evapotranspiration:</span>
-                    <strong className="text-slate-900">4.2 mm/day</strong>
+                    <span className="text-slate-500 block">Historical Context:</span>
+                    <strong className="text-slate-900">Matched CSV cohort</strong>
                   </div>
                   <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                    <span className="text-slate-500 block">Target Flow Rate:</span>
-                    <strong className="text-slate-900">35 L/min</strong>
+                    <span className="text-slate-500 block">Pump Flow:</span>
+                    <strong className="text-slate-900">Farmer-entered value</strong>
                   </div>
                 </div>
               </div>
@@ -306,15 +309,15 @@ const DashboardPreview = () => {
                 <ul className="space-y-2 text-sm">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 size={18} className="text-green-600 shrink-0 mt-0.5" />
-                    <span>Schedule motor start for <strong>06:00 AM</strong> for 2 hours.</span>
+                    <span>Confirm the current root-zone moisture before operating the pump.</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 size={18} className="text-green-600 shrink-0 mt-0.5" />
-                    <span>Apply recommended water volume of <strong>4,200 Litres</strong>.</span>
+                    <span>Use the calculated volume and duration from the saved plot’s area and pump flow.</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <AlertTriangle size={18} className="text-amber-500 shrink-0 mt-0.5" />
-                    <span>Hold afternoon fertilizer application due to pending rainfall.</span>
+                    <span>Check a genuine local weather source; CSV rainfall values are historical, not a forecast.</span>
                   </li>
                 </ul>
               </div>

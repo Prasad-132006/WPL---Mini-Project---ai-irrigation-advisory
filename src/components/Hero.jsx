@@ -64,13 +64,13 @@ const Hero = () => {
 
           <div className="flex flex-wrap gap-8 mt-14">
             <div>
-              <h2 className="text-3xl font-bold">25K+</h2>
-              <p className="text-slate-300">Farmers Supported</p>
+              <h2 className="text-3xl font-bold">Sugarcane</h2>
+              <p className="text-slate-300">Only Supported Crop</p>
             </div>
 
             <div>
-              <h2 className="text-3xl font-bold">40%</h2>
-              <p className="text-slate-300">Water Saved</p>
+              <h2 className="text-3xl font-bold">MongoDB</h2>
+              <p className="text-slate-300">Persistent Farm Records</p>
             </div>
 
             <div>
@@ -89,8 +89,8 @@ const Hero = () => {
                 <span className="text-xs font-semibold uppercase tracking-wider text-green-700 bg-green-50 px-2.5 py-1 rounded-full inline-block mb-1.5">
                   Irrigation Advisory
                 </span>
-                <p className="text-xs text-gray-500">Today's Recommendation</p>
-                <h3 className="text-xl font-bold text-gray-900 mt-0.5">Irrigate Tomorrow</h3>
+                <p className="text-xs text-gray-500">Illustrative preview</p>
+                <h3 className="text-xl font-bold text-gray-900 mt-0.5">Review Field Moisture</h3>
               </div>
               <div className="p-3 bg-green-50 rounded-2xl">
                 <BrainCircuit className="text-green-600" size={30} />
@@ -104,8 +104,8 @@ const Hero = () => {
               </div>
 
               <div className="flex justify-between items-center text-sm">
-                <span className="text-gray-600">Rain Chance</span>
-                <span className="font-bold text-blue-600">78%</span>
+                <span className="text-gray-600">Historical rainfall field</span>
+                <span className="font-bold text-blue-600">CSV reference</span>
               </div>
 
               <div className="flex justify-between items-center text-sm">
@@ -125,11 +125,11 @@ const Hero = () => {
             <div className="bg-white rounded-2xl shadow-xl p-4 text-slate-900 border border-slate-100 flex flex-col justify-between">
               <div className="flex items-center justify-between">
                 <CloudRain className="text-blue-500" size={24} />
-                <span className="text-[10px] font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">Weather</span>
+                <span className="text-[10px] font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">Historical</span>
               </div>
               <div className="mt-3">
-                <p className="text-xs text-gray-500">Rain Chance</p>
-                <p className="text-2xl font-bold text-gray-900 mt-0.5">78%</p>
+                <p className="text-xs text-gray-500">Rainfall Field</p>
+                <p className="text-lg font-bold text-gray-900 mt-0.5">CSV row</p>
               </div>
             </div>
 

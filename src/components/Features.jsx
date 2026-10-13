@@ -34,7 +34,7 @@ const features = [
       "Multiple saved sugarcane plots per farmer",
       "Persisted recommendations and acceptance history",
     ],
-    metric: "Up to 40% water saved per cycle",
+    metric: "Pump duration calculated from measured flow rate",
   },
   {
     id: "weather-intelligence",
@@ -55,7 +55,7 @@ const features = [
       "Historical rainfall indicator included with each advisory",
       "Dataset humidity and rainfall used transparently",
     ],
-    metric: "Zero redundant irrigation before rainfall",
+    metric: "Historical context is clearly labeled—not a forecast",
   },
   {
     id: "crop-health",
@@ -63,20 +63,20 @@ const features = [
     title: "Crop Health Monitoring",
     tagline: "Agronomic Vitality",
     description:
-      "Monitor crop conditions and receive alerts about water stress and growth trends.",
+      "Review manually entered moisture against stage-specific sugarcane thresholds.",
     color: "text-green-600",
     bgColor: "bg-green-50",
     badgeColor: "bg-green-100 text-green-800",
     accentColor: "border-green-500",
     overview:
-      "Continuous health tracking monitors crop water-stress thresholds across vegetative, flowering, and ripening stages to safeguard root systems and yield potential.",
+      "The advisory compares a farmer-entered moisture reading with historical records for the selected sugarcane stage and soil type.",
     highlights: [
-      "Stage-specific crop water need baselines (Vegetative, Fruiting, etc.)",
-      "Early warning indicators for water stress and moisture deficits",
-      "Prevention of root rot and nutrient-washout conditions",
-      "Growth progress benchmarking against optimal regional yields",
+      "Sugarcane stage-specific planning depths and intervals",
+      "Manually entered moisture is preserved with each advisory",
+      "Wet-field results prescribe no additional irrigation volume",
+      "Historical disease notes remain clearly identified as references",
     ],
-    metric: "18-25% average improvement in crop yield",
+    metric: "Four supported sugarcane growth stages",
   },
   {
     id: "ai-recommendations",
@@ -103,20 +103,20 @@ const features = [
     id: "analytics-dashboard",
     icon: BarChart3,
     title: "Analytics Dashboard",
-    tagline: "Live Farm Insights",
+    tagline: "Saved Farm Insights",
     description:
-      "Track water usage, irrigation history, and farm performance with interactive charts.",
+      "Review saved plots, recommendation history, and acceptance status by farmer account.",
     color: "text-orange-500",
     bgColor: "bg-orange-50",
     badgeColor: "bg-orange-100 text-orange-800",
     accentColor: "border-orange-500",
     overview:
-      "The comprehensive analytics suite turns complex agricultural telemetry into intuitive graphs, water volume consumption records, and historical efficiency benchmarks.",
+      "The dashboard retrieves each farmer’s saved plots and advisory history from MongoDB and keeps records isolated by account.",
     highlights: [
-      "Hourly and daily moisture trend charts with historical overlays",
-      "Estimated electricity and water volume conservation counters",
-      "Full audit trail of completed and scheduled irrigation events",
-      "Exportable summary reports for farm and resource audits",
+      "Saved plot details remain available after signing in again",
+      "Recommendation inputs and calculated outputs are stored together",
+      "Acceptance status and time are persisted",
+      "Selecting history also selects its associated plot",
     ],
     metric: "Persistent per-farmer advisory history",
   },
@@ -139,7 +139,7 @@ const features = [
       "Reduces electrical power consumption for irrigation pumps",
       "Aligns with sustainable and organic agriculture best practices",
     ],
-    metric: "50,000+ liters of water saved per acre annually",
+    metric: "Zero unsupported impact claims",
   },
 ];
 
@@ -324,7 +324,7 @@ const Features = () => {
               </div>
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wider text-green-700">
-                  Measurable Impact
+                  Verified Capability
                 </p>
                 <p className="text-sm font-bold text-slate-900">
                   {selectedFeature.metric}

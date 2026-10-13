@@ -4,7 +4,7 @@ const testimonials = [
   {
     id: 1,
     quote:
-      "AgroAI transformed how we manage water across our 200-acre farm. The automated schedules saved us nearly 40% in water usage during the last harvest alone.",
+      "I can enter a moisture reading, save my sugarcane plot, and review the calculated pump duration before irrigating.",
     author: "Rajesh Patel",
     role: "Sugarcane Farmer",
     location: "Gujarat, India",
@@ -42,10 +42,10 @@ const Testimonials = () => {
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto mb-16">
         <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-3 mb-4">
-          Trusted by Farmers Worldwide
+          Example Farmer Workflows
         </h2>
         <p className="text-slate-600 text-lg">
-          See how smart irrigation advisory helps growers cut costs, save water, and improve overall crop yield.
+          Illustrative scenarios showing how the project can support irrigation review; these are not verified customer testimonials or impact claims.
         </p>
       </div>
 

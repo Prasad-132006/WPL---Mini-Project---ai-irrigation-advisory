@@ -2,9 +2,9 @@ import { CloudRain, Droplets, Clock, Cpu, ArrowRight } from 'lucide-react';
 
 const Recommendation = () => {
   const recommendationData = {
-    action: "Irrigate Tomorrow Morning",
+    action: "Review Field Moisture",
     soilMoisture: "24%",
-    rainChance: "78%",
+    historicalRainfall: "CSV reference",
     cropStage: "Vegetative",
     waterRequired: "4,200 Litres",
     pumpDuration: "2 Hours",
@@ -19,10 +19,10 @@ const Recommendation = () => {
           <Cpu className="w-4 h-4 text-emerald-200" /> Dataset Decision Support
         </span>
         <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4">
-          Today's Dataset Recommendation
+          Example Dataset Recommendation
         </h2>
         <p className="text-emerald-100 text-lg">
-          Guidance based on manually entered field moisture, sugarcane stage requirements, and historical dataset indicators.
+          Illustrative guidance based on manually entered field moisture, sugarcane stage requirements, and historical dataset indicators—not live sensor or weather data.
         </p>
       </div>
 
@@ -51,9 +51,9 @@ const Recommendation = () => {
 
           <div className="bg-white/5 rounded-xl p-4 border border-white/10">
             <div className="flex items-center gap-2 text-emerald-200 text-sm mb-1">
-              <CloudRain className="w-4 h-4" /> Rain Chance
+              <CloudRain className="w-4 h-4" /> Historical Rainfall
             </div>
-            <p className="text-2xl font-bold">{recommendationData.rainChance}</p>
+            <p className="text-2xl font-bold">{recommendationData.historicalRainfall}</p>
           </div>
 
           <div className="bg-white/5 rounded-xl p-4 border border-white/10">

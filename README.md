@@ -23,7 +23,7 @@ No MongoDB Atlas account or paid service is required.
 ## First-time setup
 
 ```powershell
-git clone --branch frontend https://github.com/Prasad-132006/WPL---Mini-Project---ai-irrigation-advisory.git
+git clone --branch backend-mongodb-integration https://github.com/Prasad-132006/WPL---Mini-Project---ai-irrigation-advisory.git
 cd WPL---Mini-Project---ai-irrigation-advisory
 npm install
 Copy-Item .env.example .env

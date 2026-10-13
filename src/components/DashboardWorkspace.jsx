@@ -49,6 +49,18 @@ const DashboardWorkspace = () => {
     setActiveAdvisory(advisories.find((item) => item.farm === id) || null);
   };
 
+  const selectAdvisory = (advisory) => {
+    const associatedFarmId = typeof advisory.farm === "object" ? advisory.farm._id : advisory.farm;
+    const associatedFarm = farms.find((item) => item._id === associatedFarmId);
+    if (associatedFarm) {
+      setFarmId(associatedFarm._id);
+      setFarm(toFormFarm(associatedFarm));
+    }
+    setActiveAdvisory(advisory);
+    setMessage(associatedFarm ? `Showing this advisory with its plot, ${associatedFarm.farmName}.` : "Showing saved advisory.");
+    setError("");
+  };
+
   const validateFarm = () => {
     if (farm.farmName.trim().length < 2) return "Enter a plot name with at least 2 characters.";
     if (!farm.area || Number(farm.area) < 0.1) return "Area must be at least 0.1 acre.";
@@ -157,7 +169,7 @@ const DashboardWorkspace = () => {
         </div>
       </div>
 
-      <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200 sm:p-8"><div className="flex items-center gap-2 text-slate-800"><History size={20} /><h3 className="text-xl font-bold">Advisory history</h3></div>{advisories.length === 0 ? <p className="mt-4 text-sm text-slate-500">No saved advisories yet.</p> : <div className="mt-5 overflow-x-auto"><table className="w-full min-w-180 text-left text-sm"><thead className="border-b border-slate-200 text-slate-500"><tr><th className="py-3">Date</th><th>Stage</th><th>Moisture</th><th>Water</th><th>Status</th><th></th></tr></thead><tbody>{advisories.map((item) => <tr key={item._id} className="border-b border-slate-100"><td className="py-3">{new Date(item.createdAt).toLocaleString()}</td><td>{item.inputs.cropStage}</td><td>{item.inputs.soilMoisture}%</td><td>{item.recommendation.waterRequiredLitres.toLocaleString()} L</td><td>{item.accepted ? "Accepted" : "Pending"}</td><td><button type="button" onClick={() => setActiveAdvisory(item)} className="font-semibold text-green-700 hover:underline">View</button></td></tr>)}</tbody></table></div>}</div>
+      <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200 sm:p-8"><div className="flex items-center gap-2 text-slate-800"><History size={20} /><h3 className="text-xl font-bold">Advisory history</h3></div>{advisories.length === 0 ? <p className="mt-4 text-sm text-slate-500">No saved advisories yet.</p> : <div className="mt-5 overflow-x-auto"><table className="w-full min-w-180 text-left text-sm"><thead className="border-b border-slate-200 text-slate-500"><tr><th className="py-3">Date</th><th>Stage</th><th>Moisture</th><th>Water</th><th>Status</th><th></th></tr></thead><tbody>{advisories.map((item) => <tr key={item._id} className="border-b border-slate-100"><td className="py-3">{new Date(item.createdAt).toLocaleString()}</td><td>{item.inputs.cropStage}</td><td>{item.inputs.soilMoisture}%</td><td>{item.recommendation.waterRequiredLitres.toLocaleString()} L</td><td>{item.accepted ? "Accepted" : "Pending"}</td><td><button type="button" onClick={() => selectAdvisory(item)} className="font-semibold text-green-700 hover:underline">View</button></td></tr>)}</tbody></table></div>}</div>
     </section>
   );
 };
