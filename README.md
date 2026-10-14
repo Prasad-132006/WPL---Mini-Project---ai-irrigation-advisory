@@ -86,7 +86,7 @@ Vite proxies `/api` requests to Express. For separate terminals, use `npm run de
    - `farmers`: account, name, normalized email, bcrypt password hash, and profile fields
    - `fields`: separate sugarcane field documents with a `farmer` owner reference
    - `advisories`: captured inputs, calculated recommendation, a `field` reference, and acceptance status
-   - `support_tickets`: farmer messages, optional field reference, admin reply, status, timestamps, and responding administrator
+   - `support_tickets`: farmer messages, optional field reference, incident date, optional affected duration in minutes, admin reply, status, timestamps, and responding administrator
 
 The same owner ObjectId connects a farmer’s records. API queries always include that owner, so another authenticated farmer cannot read or modify them.
 
@@ -103,7 +103,7 @@ The same owner ObjectId connects a farmer’s records. API queries always includ
 
 ## Farmer Support Center
 
-Every authenticated farmer has a **Support Center** tab. A request can optionally reference one of that farmer’s fields and contains one validated category, a subject of 3–120 characters, and a message of 10–3,000 characters. Express verifies field ownership before saving it. The success response contains a reference such as `AG-12AB34CD`; the My Support Requests list retrieves real MongoDB records and opens individual tickets through the ownership-scoped API.
+Every authenticated farmer has a **Support Center** tab. A request can optionally reference one of that farmer’s fields and contains one validated category, a required real incident date that cannot be in the future, an optional whole-number affected duration of 1–10,080 minutes, a subject of 3–120 characters, and a message of 10–3,000 characters. The React form restricts the duration to digits and applies immediate range checks; Express independently repeats all rules and verifies field ownership before saving. The success response contains a reference such as `AG-12AB34CD`; the My Support Requests list retrieves real MongoDB records and opens individual tickets through the ownership-scoped API.
 
 Ticket statuses are:
 
@@ -122,7 +122,7 @@ An allowlisted administrator sees an additional **Admin Support** tab. It lists 
 5. In Chrome DevTools, open **Network**, submit the form, and inspect the real `POST /api/support` JSON response and ticket reference.
 6. Sign in as the configured administrator, open **Admin Support**, reply, and inspect `PATCH /api/admin/support/:id/reply` in Network.
 7. Sign back in as the farmer and open the ticket to read the stored reply.
-8. In MongoDB Compass, open `agroai` → `support_tickets`; confirm the `farmer`, optional `field`, `respondingAdmin`, reply, status, and timestamps match the UI.
+8. In MongoDB Compass, open `agroai` → `support_tickets`; confirm the `farmer`, optional `field`, `incidentDate`, optional `affectedDurationMinutes`, `respondingAdmin`, reply, status, and timestamps match the UI.
 
 ### Existing `farms` collection migration
 

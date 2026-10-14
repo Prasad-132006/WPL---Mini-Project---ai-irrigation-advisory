@@ -163,6 +163,8 @@ test("complete auth, persistence, acceptance, duplicate-email, and user-isolatio
 });
 
 test("support tickets persist with field ownership and server-enforced admin replies", async () => {
+  const incidentDate = new Date(Date.now() - (2 * 24 * 60 * 60 * 1000)).toISOString().slice(0, 10);
+  const futureIncidentDate = new Date(Date.now() + (2 * 24 * 60 * 60 * 1000)).toISOString().slice(0, 10);
   const farmer = request.agent(app);
   const otherFarmer = request.agent(app);
   const admin = request.agent(app);
@@ -178,19 +180,26 @@ test("support tickets persist with field ownership and server-enforced admin rep
   const ownedField = await farmer.post("/api/fields").send({ farmName: "Support Field", area: 1, crop: "Sugarcane", cropStage: "Vegetative", soilType: "Loamy", electricity: "Available", soilMoisture: 21, pumpFlowRateLph: 18000 });
   const otherField = await otherFarmer.post("/api/fields").send({ farmName: "Other Field", area: 2, crop: "Sugarcane", cropStage: "Maturity", soilType: "Clay", electricity: "Available", soilMoisture: 30, pumpFlowRateLph: 22000 });
 
-  const rejectedForeignField = await farmer.post("/api/support").send({ fieldId: otherField.body.field._id, category: "Field details", subject: "Wrong field", message: "This field belongs to another farmer." });
+  const rejectedForeignField = await farmer.post("/api/support").send({ fieldId: otherField.body.field._id, category: "Field details", incidentDate, subject: "Wrong field", message: "This field belongs to another farmer." });
   assert.equal(rejectedForeignField.status, 404);
-  assert.equal((await farmer.post("/api/support").send({ category: "Other", subject: "No", message: "short" })).status, 400);
+  assert.equal((await farmer.post("/api/support").send({ category: "Other", incidentDate, subject: "No", message: "short" })).status, 400);
+  assert.equal((await farmer.post("/api/support").send({ category: "Other", incidentDate: futureIncidentDate, subject: "Future incident", message: "This incident date must be rejected." })).status, 400);
+  assert.equal((await farmer.post("/api/support").send({ category: "Other", incidentDate: "2026-02-30", subject: "Invalid incident", message: "This calendar date must be rejected." })).status, 400);
+  assert.equal((await farmer.post("/api/support").send({ category: "Other", incidentDate, affectedDurationMinutes: "ten", subject: "Invalid duration", message: "This nonnumeric duration must be rejected." })).status, 400);
 
   const created = await farmer.post("/api/support").send({
     fieldId: ownedField.body.field._id,
     category: "Pump/Electricity",
+    incidentDate,
+    affectedDurationMinutes: 10,
     subject: "Pump stops during irrigation",
     message: "The pump stops after ten minutes even though electricity is available.",
   });
   assert.equal(created.status, 201);
   assert.match(created.body.ticket.reference, /^AG-[A-F\d]{8}$/);
   assert.equal(created.body.ticket.field.farmName, "Support Field");
+  assert.equal(created.body.ticket.incidentDate.slice(0, 10), incidentDate);
+  assert.equal(created.body.ticket.affectedDurationMinutes, 10);
   const ticketId = created.body.ticket._id;
 
   assert.equal((await farmer.get("/api/admin/support")).status, 403);
@@ -221,6 +230,8 @@ test("support tickets persist with field ownership and server-enforced admin rep
   const storedTicket = await SupportTicket.findById(ticketId);
   assert.equal(storedTicket.status, "Resolved");
   assert.equal(String(storedTicket.field), ownedField.body.field._id);
+  assert.equal(storedTicket.incidentDate.toISOString().slice(0, 10), incidentDate);
+  assert.equal(storedTicket.affectedDurationMinutes, 10);
   assert.ok(storedTicket.repliedAt);
   assert.ok(storedTicket.respondingAdmin);
 });

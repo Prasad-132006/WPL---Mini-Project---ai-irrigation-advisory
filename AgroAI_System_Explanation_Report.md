@@ -35,7 +35,7 @@ The `passwordHash` field is excluded from normal database queries and never appe
 - `farmers`: name, normalized unique email, password hash, optional profile, timestamps
 - `fields`: farmer owner, field name, area, fixed Sugarcane crop, crop stage, soil type, electricity availability, current moisture, pump flow, timestamps
 - `advisories`: farmer owner, field reference, immutable input snapshot, calculated recommendation, reference CSV row, accepted state, accepted time, timestamps
-- `support_tickets`: farmer owner, optional owned-field reference, category, subject, message, reply, status, responding admin, and timestamps
+- `support_tickets`: farmer owner, optional owned-field reference, category, required incident date, optional affected duration in whole minutes, subject, message, reply, status, responding admin, and timestamps
 
 Every field and advisory operation includes the authenticated farmer ID. Object IDs alone do not grant access. The My Fields interface lists each owned field as a separate card and filters advisory history by its `field` reference.
 
@@ -61,7 +61,7 @@ The CSV’s raw water field is retained and displayed, but is not used as an ope
 ## Validation and failure handling
 
 - The frontend validates required plot inputs before making a request.
-- Zod validates every authentication, farm, and advisory request.
+- Zod validates every authentication, field, advisory, and support request. Support incidents require a real non-future date, and optional affected duration is restricted to a whole number from 1 to 10,080 minutes.
 - Mongoose repeats important enum, numeric, ownership, and uniqueness constraints.
 - The API returns clear 4xx errors for invalid input, duplicates, bad credentials, missing records, and unauthenticated access.
 - MongoDB connection failure prevents server startup and prints a direct remediation message.

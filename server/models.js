@@ -66,6 +66,8 @@ const supportTicketSchema = new mongoose.Schema({
   farmer: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
   field: { type: mongoose.Schema.Types.ObjectId, ref: "Field", default: null, index: true },
   category: { type: String, enum: ["Irrigation advice", "Pump/Electricity", "Field details", "Technical issue", "Other"], required: true },
+  incidentDate: { type: Date, required: true },
+  affectedDurationMinutes: { type: Number, default: null, min: 1, max: 10080, validate: { validator: (value) => value == null || Number.isInteger(value), message: "Affected duration must be a whole number." } },
   subject: { type: String, required: true, trim: true, minlength: 3, maxlength: 120 },
   message: { type: String, required: true, trim: true, minlength: 10, maxlength: 3000 },
   adminReply: { type: String, default: "", maxlength: 3000 },

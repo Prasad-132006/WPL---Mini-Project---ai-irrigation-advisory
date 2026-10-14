@@ -119,6 +119,8 @@ export const createApp = () => {
       farmer: req.user._id,
       field: field?._id || null,
       category: data.category,
+      incidentDate: data.incidentDate,
+      affectedDurationMinutes: data.affectedDurationMinutes ?? null,
       subject: data.subject,
       message: data.message,
     });

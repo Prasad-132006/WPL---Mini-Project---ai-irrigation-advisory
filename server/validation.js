@@ -26,9 +26,29 @@ export const advisorySchema = z.object({
   fieldId: z.string().regex(/^[a-f\d]{24}$/i),
 });
 
+const incidentDateSchema = z.string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/, "Use a valid date in YYYY-MM-DD format.")
+  .refine((value) => {
+    const parsed = new Date(`${value}T00:00:00.000Z`);
+    return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
+  }, "Use a real calendar date.")
+  .refine((value) => {
+    const now = new Date();
+    const localToday = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+    return new Date(`${value}T00:00:00.000Z`).getTime() <= localToday;
+  }, "Incident date cannot be in the future.")
+  .transform((value) => new Date(`${value}T00:00:00.000Z`));
+
+const affectedDurationSchema = z.preprocess((value) => {
+  if (typeof value === "string" && /^\d+$/.test(value)) return Number(value);
+  return value;
+}, z.number().int().min(1).max(10080).nullable().optional());
+
 export const supportTicketSchema = z.object({
   fieldId: z.string().regex(/^[a-f\d]{24}$/i).nullable().optional(),
   category: z.enum(["Irrigation advice", "Pump/Electricity", "Field details", "Technical issue", "Other"]),
+  incidentDate: incidentDateSchema,
+  affectedDurationMinutes: affectedDurationSchema,
   subject: z.string().trim().min(3).max(120),
   message: z.string().trim().min(10).max(3000),
 });
