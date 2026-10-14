@@ -16,7 +16,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-8">
-          <Link to="/dashboard" className="flex items-center gap-3">
+          <Link to="/" aria-label="Go to AgroAI home page" className="flex items-center gap-3">
             <div className="rounded-xl bg-green-600 p-2.5 text-white"><Sprout size={24} /></div>
             <div>
               <h1 className="text-2xl font-bold leading-none text-[#002B1D]">AgroAI</h1>
