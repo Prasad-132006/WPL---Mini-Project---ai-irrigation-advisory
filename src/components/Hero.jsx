@@ -14,7 +14,6 @@ const Hero = () => {
 
   return (
     <section className="relative min-h-175 overflow-hidden">
-      {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
@@ -23,12 +22,9 @@ const Hero = () => {
         }}
       />
 
-      {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/60" />
 
-      {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto min-h-175 px-6 py-20 lg:py-0 flex flex-col lg:flex-row items-center justify-center lg:justify-between gap-12">
-        {/* LEFT */}
         <div className="max-w-2xl text-center lg:text-left text-white">
           <span className="inline-flex items-center gap-1.5 bg-green-600/20 border border-green-400 text-green-300 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium mb-5 sm:mb-6 whitespace-nowrap">
             🌱 Data-Guided Sugarcane Farming
@@ -54,13 +50,7 @@ const Hero = () => {
               <ArrowRight size={18} />
             </Link>
 
-            {/* <button className="border border-white text-white hover:bg-white hover:text-black transition px-8 py-4 rounded-full flex items-center justify-center gap-2">
-              <PlayCircle size={20} />
-              Watch Demo
-            </button> */}
           </div>
-
-          {/* Stats */}
 
           <div className="flex flex-wrap gap-8 mt-14">
             <div>
@@ -80,9 +70,7 @@ const Hero = () => {
           </div>
         </div>
 
-        {/* RIGHT */}
         <div className="hidden lg:flex flex-col gap-4 w-full max-w-lg">
-          {/* Main Dashboard Recommendation */}
           <div className="bg-white rounded-3xl shadow-2xl p-6 text-slate-900 border border-slate-100">
             <div className="flex justify-between items-start mb-6">
               <div>
@@ -119,9 +107,7 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* Metric Cards Grid */}
           <div className="grid grid-cols-3 gap-4">
-            {/* Weather Card */}
             <div className="bg-white rounded-2xl shadow-xl p-4 text-slate-900 border border-slate-100 flex flex-col justify-between">
               <div className="flex items-center justify-between">
                 <CloudRain className="text-blue-500" size={24} />
@@ -133,7 +119,6 @@ const Hero = () => {
               </div>
             </div>
 
-            {/* Soil Card */}
             <div className="bg-white rounded-2xl shadow-xl p-4 text-slate-900 border border-slate-100 flex flex-col justify-between">
               <div className="flex items-center justify-between">
                 <Droplets className="text-cyan-500" size={24} />
@@ -145,7 +130,6 @@ const Hero = () => {
               </div>
             </div>
 
-            {/* AI Card */}
             <div className="bg-green-600 text-white rounded-2xl shadow-xl p-4 flex flex-col justify-between">
               <div className="flex items-center justify-between">
                 <TrendingUp className="text-green-100" size={24} />

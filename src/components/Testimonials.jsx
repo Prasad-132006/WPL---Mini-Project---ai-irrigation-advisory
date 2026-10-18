@@ -39,7 +39,6 @@ const testimonials = [
 const Testimonials = () => {
   return (
     <div className="w-full">
-      {/* Header */}
       <div className="text-center max-w-3xl mx-auto mb-16">
         <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-3 mb-4">
           Example Farmer Workflows
@@ -49,7 +48,6 @@ const Testimonials = () => {
         </p>
       </div>
 
-      {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {testimonials.map((item) => (
           <div
@@ -57,20 +55,17 @@ const Testimonials = () => {
             className="bg-slate-50 border border-slate-200 rounded-2xl p-8 flex flex-col justify-between relative shadow-sm hover:shadow-md transition-shadow duration-300"
           >
             <div>
-              {/* Star Rating */}
               <div className="flex items-center gap-1 mb-4 text-amber-400">
                 {[...Array(item.rating)].map((_, i) => (
                   <Star key={i} className="w-5 h-5 fill-amber-400" />
                 ))}
               </div>
 
-              {/* Quote */}
               <p className="text-slate-700 leading-relaxed italic mb-6">
                 "{item.quote}"
               </p>
             </div>
 
-            {/* Author details */}
             <div className="flex items-center gap-4 pt-4 border-t border-slate-200">
               <img
                 src={item.avatar}

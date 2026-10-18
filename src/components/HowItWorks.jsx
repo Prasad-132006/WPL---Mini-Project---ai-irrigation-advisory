@@ -42,8 +42,6 @@ const HowItWorks = () => {
     <section className="py-24 bg-slate-50">
       <div className="max-w-7xl mx-auto px-6">
 
-        {/* Heading */}
-
         <div className="text-center max-w-3xl mx-auto">
 
           <span className="text-green-600 uppercase tracking-widest font-semibold">
@@ -62,8 +60,6 @@ const HowItWorks = () => {
 
         </div>
 
-        {/* Timeline */}
-
         <div className="mt-20 grid md:grid-cols-2 lg:grid-cols-4 gap-8">
 
           {steps.map((step, index) => {
@@ -74,21 +70,15 @@ const HowItWorks = () => {
                 key={index}
                 className="relative bg-white rounded-3xl shadow-md hover:shadow-xl transition duration-300 p-8 text-center group"
               >
-                {/* Icon */}
-
                 <div
                   className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center ${step.color}`}
                 >
                   <Icon size={38} />
                 </div>
 
-                {/* Step Number */}
-
                 <div className="absolute top-5 right-5 w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-sm font-bold">
                   {index + 1}
                 </div>
-
-                {/* Content */}
 
                 <h3 className="text-xl font-bold mt-6">
                   {step.title}
@@ -97,8 +87,6 @@ const HowItWorks = () => {
                 <p className="text-slate-600 mt-4 leading-7">
                   {step.description}
                 </p>
-
-                {/* Arrow */}
 
                 {index !== steps.length - 1 && (
                   <div className="hidden lg:flex absolute -right-7 top-1/2 -translate-y-1/2 text-green-500">
@@ -113,31 +101,6 @@ const HowItWorks = () => {
           })}
 
         </div>
-
-        {/* Bottom Info */}
-
-        {/* <div className="mt-20 bg-linear-to-r from-green-600 to-emerald-500 rounded-3xl text-white p-10 lg:flex items-center justify-between">
-
-          <div>
-
-            <h3 className="text-3xl font-bold">
-              AI Makes Every Drop Count 💧
-            </h3>
-
-            <p className="mt-4 text-green-100 max-w-2xl leading-7">
-              By combining weather intelligence, soil moisture data,
-              and historical comparisons, the platform helps
-              farmers reduce water usage while improving crop health
-              and productivity.
-            </p>
-
-          </div>
-
-          <button className="mt-8 lg:mt-0 bg-white text-green-700 px-8 py-4 rounded-full font-semibold hover:scale-105 transition">
-            Explore Dashboard
-          </button>
-
-        </div> */}
 
       </div>
     </section>

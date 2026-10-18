@@ -46,8 +46,6 @@ const Register = () => {
         className="space-y-2"
       >
         {serverError && <p className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">{serverError}</p>}
-        {/* Full Name */}
-
         <AuthInput
           label="Full Name"
           name="name"
@@ -64,8 +62,6 @@ const Register = () => {
           }}
           error={errors.name}
         />
-
-        {/* Email */}
 
         <AuthInput
           label="Email Address"
@@ -84,8 +80,6 @@ const Register = () => {
           error={errors.email}
         />
 
-        {/* Password */}
-
         <AuthInput
           label="Password"
           name="password"
@@ -103,8 +97,6 @@ const Register = () => {
           error={errors.password}
         />
 
-        {/* Confirm Password */}
-
         <AuthInput
           label="Confirm Password"
           name="confirmPassword"
@@ -119,8 +111,6 @@ const Register = () => {
           }}
           error={errors.confirmPassword}
         />
-
-        {/* Terms */}
 
         <div className="flex items-start gap-3 py-2">
           <input
@@ -153,8 +143,6 @@ const Register = () => {
           </p>
         )}
 
-        {/* Register Button */}
-
         <button
           type="submit"
           disabled={isSubmitting}
@@ -173,8 +161,6 @@ const Register = () => {
         >
           {isSubmitting ? "Creating account..." : "Create Account"}
         </button>
-
-        {/* Login */}
 
         <p className="text-center text-slate-500 mt-8">
           Already have an account?

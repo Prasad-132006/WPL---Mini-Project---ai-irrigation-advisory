@@ -23,8 +23,6 @@ const AuthInput = ({
   return (
     <div className="mb-6">
 
-      {/* Label */}
-
       <label
         htmlFor={name}
         className="block mb-2 text-sm font-semibold text-slate-700"
@@ -32,11 +30,7 @@ const AuthInput = ({
         {label}
       </label>
 
-      {/* Input */}
-
       <div className="relative">
-
-        {/* Left Icon */}
 
         {Icon && (
           <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
@@ -66,8 +60,6 @@ const AuthInput = ({
           `}
         />
 
-        {/* Password Toggle */}
-
         {type === "password" && (
           <button
             type="button"
@@ -83,8 +75,6 @@ const AuthInput = ({
         )}
 
       </div>
-
-      {/* Error */}
 
       {error && (
         <p className="mt-2 text-sm text-red-500">

@@ -16,7 +16,6 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const { user: loggedInUser, logout } = useAuth();
 
-  // Detect scroll
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -50,20 +49,16 @@ const Navbar = () => {
           : "bg-white/90 backdrop-blur-md"
       }`}
     >
-      {/* ================= MAIN NAVBAR ================= */}
       <div className="max-w-7xl mx-auto h-20 px-6 flex items-center justify-between">
-        {/* ================= LOGO ================= */}
         <Link
           to="/"
           onClick={() => setMobileMenu(false)}
           className="flex items-center gap-3"
         >
-          {/* Logo Icon */}
           <div className="bg-green-600 p-2.5 rounded-xl text-white">
             <Sprout size={24} />
           </div>
 
-          {/* Logo Text */}
           <div>
             <h1 className="font-bold text-2xl text-[#002B1D] leading-none">
               AgroAI
@@ -74,9 +69,7 @@ const Navbar = () => {
           </div>
         </Link>
 
-        {/* ================= DESKTOP ACTIONS ================= */}
         <div className="hidden md:flex items-center gap-3">
-          {/* Search */}
           <button
             type="button"
             aria-label="Search"
@@ -101,7 +94,6 @@ const Navbar = () => {
           </button>
 
           {loggedInUser ? (
-            /* Logged-in State */
             <div className="flex items-center gap-3">
               <Link
                 to="/dashboard"
@@ -127,7 +119,6 @@ const Navbar = () => {
               </button>
             </div>
           ) : (
-            /* Logged-out State */
             <div className="flex items-center gap-3">
               <Link
                 to="/login"
@@ -185,7 +176,6 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* ================= MOBILE MENU BUTTON ================= */}
         <button
           type="button"
           aria-label={
@@ -210,7 +200,6 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* ================= MOBILE MENU ================= */}
       {mobileMenu && (
         <div
           className="
@@ -222,7 +211,6 @@ const Navbar = () => {
           "
         >
           {loggedInUser ? (
-            /* Mobile Logged-in Menu */
             <div className="px-6 py-5 space-y-3">
               <div className="p-3.5 bg-green-50 border border-green-200 rounded-2xl flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -258,7 +246,6 @@ const Navbar = () => {
               </button>
             </div>
           ) : (
-            /* Mobile Logged-out Menu */
             <div className="px-6 py-5 space-y-3">
               <Link
                 to="/login"

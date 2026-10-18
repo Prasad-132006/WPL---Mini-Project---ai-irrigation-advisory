@@ -150,7 +150,6 @@ const Features = () => {
   const ctaPath = user ? "/dashboard" : "/register";
   const ctaText = user ? "Open in Dashboard" : "Get Started Free";
 
-  // Handle ESC key to close modal
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
@@ -174,7 +173,6 @@ const Features = () => {
   return (
     <section id="features" className="py-24 bg-white relative">
       <div className="max-w-7xl mx-auto px-6">
-        {/* Heading */}
         <div className="text-center max-w-3xl mx-auto">
           <span className="text-green-600 font-semibold uppercase tracking-widest text-sm">
             Features
@@ -191,7 +189,6 @@ const Features = () => {
           </p>
         </div>
 
-        {/* Cards */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
           {features.map((feature, index) => {
             const Icon = feature.icon;
@@ -240,24 +237,20 @@ const Features = () => {
         </div>
       </div>
 
-      {/* Learn More Modal Dialog */}
       {selectedFeature && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-          {/* Backdrop */}
           <div
             className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
             onClick={() => setSelectedFeature(null)}
             aria-hidden="true"
           />
 
-          {/* Modal Card */}
           <div
             role="dialog"
             aria-modal="true"
             aria-labelledby="feature-modal-title"
             className="relative bg-white rounded-3xl shadow-2xl max-w-2xl w-full p-6 sm:p-8 z-10 my-8 overflow-hidden border border-slate-100 animate-in fade-in zoom-in-95 duration-200"
           >
-            {/* Close Button */}
             <button
               type="button"
               onClick={() => setSelectedFeature(null)}
@@ -267,7 +260,6 @@ const Features = () => {
               <X size={22} />
             </button>
 
-            {/* Modal Header */}
             <div className="flex items-start gap-4 pr-10">
               <div
                 className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${selectedFeature.bgColor} ${selectedFeature.color}`}
@@ -287,7 +279,6 @@ const Features = () => {
               </div>
             </div>
 
-            {/* Overview */}
             <div className="mt-6">
               <h4 className="text-sm font-semibold uppercase tracking-wider text-slate-400">
                 Overview & Methodology
@@ -297,7 +288,6 @@ const Features = () => {
               </p>
             </div>
 
-            {/* Key Capabilities */}
             <div className="mt-6">
               <h4 className="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-3">
                 Key Capabilities & Features
@@ -317,7 +307,6 @@ const Features = () => {
               </div>
             </div>
 
-            {/* Impact Metric Banner */}
             <div className="mt-6 p-4 rounded-2xl bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 flex items-center gap-3">
               <div className="p-2 bg-green-600 text-white rounded-xl">
                 <Sparkles size={18} />
@@ -332,7 +321,6 @@ const Features = () => {
               </div>
             </div>
 
-            {/* Modal Actions */}
             <div className="mt-8 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
               <button
                 type="button"

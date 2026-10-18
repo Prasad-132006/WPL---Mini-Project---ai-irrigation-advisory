@@ -192,7 +192,6 @@ const Footer = () => {
     }
   };
 
-  // Close modal with ESC key
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
@@ -217,10 +216,8 @@ const Footer = () => {
 
   return (
     <footer className="bg-[#002B1D] text-white relative">
-      {/* Main Footer */}
       <div className="max-w-7xl mx-auto px-6 py-20">
         <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-12">
-          {/* Company */}
           <div>
             <div
               onClick={() => handleNavClick("top")}
@@ -239,7 +236,6 @@ const Footer = () => {
               Sugarcane irrigation advisory platform helping farmers make informed decisions using current soil moisture and historical farm records.
             </p>
 
-            {/* Social Links */}
             <div className="flex gap-4 mt-8">
               <a
                 href="https://facebook.com"
@@ -283,7 +279,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links */}
           <div>
             <h3 className="text-xl font-semibold mb-6">Quick Links</h3>
 
@@ -329,7 +324,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Resources */}
           <div>
             <h3 className="text-xl font-semibold mb-6">Resources</h3>
 
@@ -386,7 +380,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact */}
           <div id="contact-section">
             <h3 className="text-xl font-semibold mb-6">Contact</h3>
 
@@ -436,7 +429,6 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Bottom Footer */}
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-gray-400 text-center md:text-left text-sm">
@@ -454,23 +446,19 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Resource Information Modal */}
       {modalData && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-          {/* Backdrop */}
           <div
             className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
             onClick={() => setActiveModal(null)}
             aria-hidden="true"
           />
 
-          {/* Modal Content */}
           <div
             role="dialog"
             aria-modal="true"
             className="relative bg-white rounded-3xl shadow-2xl max-w-xl w-full p-6 sm:p-8 z-10 my-8 overflow-hidden text-slate-900 border border-slate-100 animate-in fade-in zoom-in-95 duration-200"
           >
-            {/* Close Button */}
             <button
               type="button"
               onClick={() => setActiveModal(null)}
@@ -480,7 +468,6 @@ const Footer = () => {
               <X size={20} />
             </button>
 
-            {/* Header */}
             <div className="flex items-start gap-4 pr-8">
               <div className="w-12 h-12 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center shrink-0">
                 <modalData.icon size={26} />
@@ -495,12 +482,10 @@ const Footer = () => {
               </div>
             </div>
 
-            {/* Body */}
             <div className="mt-6">
               {modalData.content}
             </div>
 
-            {/* Actions */}
             <div className="mt-8 pt-4 border-t border-slate-100 flex justify-end">
               <button
                 type="button"

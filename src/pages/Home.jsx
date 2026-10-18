@@ -10,17 +10,14 @@ const Home = () => {
   return (
     <div className="bg-slate-50 text-slate-900 overflow-x-hidden">
 
-      {/* Navigation */}
       <Navbar />
 
-      {/* Hero */}
       <main>
 
         <section id="hero">
           <Hero />
         </section>
 
-        {/* AI Features */}
         <section
           id="features"
           className="bg-white py-24"
@@ -30,7 +27,6 @@ const Home = () => {
           </div>
         </section>
 
-        {/* How It Works */}
         <section
           id="how-it-works"
           className="bg-slate-50 py-24"
@@ -40,7 +36,6 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Testimonials */}
         <section
           id="testimonials"
           className="bg-white py-24"
@@ -52,10 +47,8 @@ const Home = () => {
 
       </main>
 
-      {/* Footer */}
       <Footer />
 
-      {/* Cookie Banner */}
       <CookieBanner />
 
     </div>

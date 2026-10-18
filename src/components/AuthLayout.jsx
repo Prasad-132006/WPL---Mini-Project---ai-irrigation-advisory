@@ -11,13 +11,9 @@ const AuthLayout = ({
 
       <div className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl overflow-hidden grid lg:grid-cols-5">
 
-        {/* LEFT PANEL */}
-
         <div className="hidden lg:flex lg:col-span-2 bg-linear-to-br from-[#002B1D] via-[#008C4A] to-[#00A2E8] text-white">
 
           <div className="flex flex-col justify-center w-full px-10 py-10">
-
-            {/* Logo */}
 
             <div className="flex items-center gap-4 mb-10">
 
@@ -40,8 +36,6 @@ const AuthLayout = ({
 
             </div>
 
-            {/* Heading */}
-
             <h1 className="text-4xl font-bold leading-tight">
 
               Empowering Farmers
@@ -60,8 +54,6 @@ const AuthLayout = ({
 
             </p>
 
-            {/* Illustration */}
-
             <img
               src={image}
               alt="Smart Farming"
@@ -72,13 +64,9 @@ const AuthLayout = ({
 
         </div>
 
-        {/* RIGHT PANEL */}
-
         <div className="lg:col-span-3 flex items-center justify-center">
 
           <div className="w-full max-w-md px-8 py-6 max-h-[90vh] overflow-y-auto">
-
-            {/* Mobile Logo */}
 
             <div className="lg:hidden flex justify-center mb-8">
 

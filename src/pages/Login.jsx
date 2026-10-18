@@ -63,8 +63,6 @@ const Login = () => {
           </p>
         )}
 
-        {/* Email */}
-
         <AuthInput
           label="Email Address"
           name="email"
@@ -82,8 +80,6 @@ const Login = () => {
           error={errors.email}
         />
 
-        {/* Password */}
-
         <AuthInput
           label="Password"
           name="password"
@@ -100,8 +96,6 @@ const Login = () => {
           }}
           error={errors.password}
         />
-
-        {/* Remember */}
 
         <div className="flex justify-between items-center py-2">
 
@@ -121,8 +115,6 @@ const Login = () => {
 
         </div>
 
-        {/* Login Button */}
-
         <button
           type="submit"
           disabled={isSubmitting}
@@ -141,8 +133,6 @@ const Login = () => {
         >
           {isSubmitting ? "Signing in..." : "Login"}
         </button>
-
-        {/* Register */}
 
         <p className="text-center text-slate-500 mt-8">
 
